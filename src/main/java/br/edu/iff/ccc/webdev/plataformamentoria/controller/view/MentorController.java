@@ -5,6 +5,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,10 +22,13 @@ public class MentorController {
     @Autowired
     private MentorService mentorService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Injetar o encoder
+
     // Exibe a lista de todos os mentores (GET)
     @GetMapping
     public String showMentoresPage(Model model) {
-        model.addAttribute("mentores", mentorService.findAllMentores());
+        model.addAttribute("mentores", mentorService.findAprovados());
         return "mentor/mentores"; // -> templates/mentor/mentores.html
     }
 
@@ -41,12 +45,15 @@ public class MentorController {
                              BindingResult result,
                              RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            // Se houver erros de validação, retorna para o formulário
             return "mentor/mentor_form";
         }
-
+        
+        // Criptografar a senha e adicionar o papel de MENTOR
+        mentorDTO.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentorService.saveMentor(mentorDTO);
-        redirectAttributes.addFlashAttribute("successMessage", "Mentor cadastrado com sucesso!");
-        return "redirect:/mentores";
+        
+        // A lógica no service já deve cuidar de setar `aprovado = false`
+        redirectAttributes.addFlashAttribute("successMessage", "Sua aplicação foi enviada e será revisada por um administrador.");
+        return "redirect:/home"; // Redirecionar para home após aplicação
     }
 }

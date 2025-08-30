@@ -7,9 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.ArrayList;
 import java.util.List;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 
 @Entity
@@ -17,6 +15,9 @@ public class Mentor extends Usuario {
 
     @NotBlank(message = "A especialidade não pode ser vazia.")
     private String especialidade;
+
+    private boolean aprovado = false; // Por padrão, um novo mentor não está aprovado
+
     
     // Construtor padrão
     public Mentor() {}
@@ -41,6 +42,15 @@ public class Mentor extends Usuario {
     public void setMentorias(List<Mentoria> mentorias) {
         this.mentorias = mentorias;
     }
+
+     public boolean isAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+    
 }
 
 

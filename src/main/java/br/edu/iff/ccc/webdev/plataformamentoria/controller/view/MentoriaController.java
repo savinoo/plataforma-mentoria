@@ -29,7 +29,7 @@ public class MentoriaController {
     @GetMapping("/new")
     public String showNewMentoriaForm(Model model) {
         model.addAttribute("mentoria", new MentoriaFormDTO());
-        model.addAttribute("allMentores", mentorService.findAllMentores());
+        model.addAttribute("allMentores", mentorService.findAprovados());
         model.addAttribute("allMentorados", mentoradoService.findAllMentorados());
         return "mentoria/mentoria_form"; // -> templates/mentoria/mentoria_form.html
     }
@@ -38,7 +38,7 @@ public class MentoriaController {
     public String saveMentoria(@Valid @ModelAttribute("mentoria") MentoriaFormDTO mentoriaDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             // Recarrega os dados necessários para o formulário em caso de erro
-            model.addAttribute("allMentores", mentorService.findAllMentores());
+            model.addAttribute("allMentores", mentorService.findAprovados());
             model.addAttribute("allMentorados", mentoradoService.findAllMentorados());
             return "mentoria/mentoria_form";
         }

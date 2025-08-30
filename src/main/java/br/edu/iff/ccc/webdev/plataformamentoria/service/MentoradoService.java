@@ -1,4 +1,6 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/MentorService.java
+// CORREÇÃO PARA:
+// savinoo/plataforma-mentoria/plataforma-mentoria-BranchTestes/src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/MentoradoService.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
@@ -15,18 +17,30 @@ public class MentoradoService {
     @Autowired
     private MentoradoRepository mentoradoRepository;
 
-    // Método para salvar (criar ou atualizar) um mentorado (POST)
+    /**
+     * Salva (cria ou atualiza) um mentorado no banco de dados.
+     * Este é o método que será chamado pelo AuthController.
+     * @param mentorado A entidade Mentorado a ser salva.
+     * @return A entidade Mentorado salva.
+     */
     public Mentorado saveMentorado(Mentorado mentorado) {
-        // Futuramente, pode incluir validações, como verificar se o email já existe
+        // Validações futuras, como verificar se o e-mail já existe, podem ser adicionadas aqui.
         return mentoradoRepository.save(mentorado);
     }
 
-    // Método para buscar todos os mentorados (GET)
+    /**
+     * Busca todos os mentorados cadastrados.
+     * @return Uma lista de todos os mentorados.
+     */
     public List<Mentorado> findAllMentorados() {
         return mentoradoRepository.findAll();
     }
 
-    // Método para buscar um mentorado por ID (GET)
+    /**
+     * Busca um mentorado específico pelo seu ID.
+     * @param id O ID do mentorado a ser buscado.
+     * @return Um Optional contendo o mentorado, se encontrado.
+     */
     public Optional<Mentorado> findMentoradoById(Long id) {
         return mentoradoRepository.findById(id);
     }

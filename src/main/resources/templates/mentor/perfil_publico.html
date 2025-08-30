@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" th:replace="~{base_layout :: base(titulo = 'Perfil do Mentor', conteudo = ~{::main})}">
+
+<body>
+    <main>
+        <div class="rounded-lg bg-white p-6 shadow-md">
+            <h1 class="text-2xl font-bold mb-2" th:text="${mentor.nome}">Nome do Mentor</h1>
+            <p class="text-lg text-gray-600 mb-4" th:text="${mentor.especialidade}">Especialidade</p>
+            
+            <div class="border-t pt-4">
+                <h2 class="font-semibold">Sobre:</h2>
+                <p>Este é um mentor dedicado com vasta experiência em <span th:text="${mentor.especialidade}"></span>.</p>
+            </div>
+            
+            <div class="mt-6">
+                 <button class="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700">
+                    Solicitar Mentoria
+                </button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
