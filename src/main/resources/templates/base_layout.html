@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" th:fragment="base(titulo, conteudo)">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="${titulo}">Plataforma de Mentoria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="relative flex size-full min-h-screen flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b bg-white px-10 py-3">
+            <h1 class="text-lg font-bold">
+                <a th:href="@{/home}">Plataforma de Mentoria</a>
+            </h1>
+            <nav class="flex items-center gap-9">
+                <a class="text-sm font-medium" th:href="@{/mentorados/busca}">Buscar Mentores</a>
+                <a class="text-sm font-medium" th:href="@{/auth/login}">Login</a>
+                <a class="text-sm font-medium" th:href="@{/auth/register}">Registrar</a>
+            </nav>
+        </header>
+
+        <main class="flex flex-1 justify-center py-10">
+            <div class="w-full max-w-4xl px-4">
+                <div th:replace="${conteudo}"></div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
