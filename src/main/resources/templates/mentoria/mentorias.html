@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mentorias Agendadas</title>
+</head>
+<body>
+    <h1>Mentorias Agendadas</h1>
+    <a th:href="@{/mentorias/new}">Agendar Nova Mentoria</a>
+    <table border="1" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Tema</th>
+                <th>Data</th>
+                <th>Mentor</th>
+                <th>Mentorado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${mentorias}">
+                <td th:text="${m.tema}"></td>
+                <td th:text="${#temporals.format(m.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${m.mentor.nome}"></td>
+                <td th:text="${m.mentorado.nome}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

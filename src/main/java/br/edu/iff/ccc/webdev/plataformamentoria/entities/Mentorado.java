@@ -1,10 +1,7 @@
-// src/main/java/br/edu/iff/mentorplatform/entities/Mentor.java
+// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/entities/Mentorado.java
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
-import java.util.ArrayList;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
@@ -13,24 +10,24 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 
 @Entity
-public class Mentor extends Usuario {
+public class Mentorado extends Usuario {
 
-    @NotBlank(message = "A especialidade não pode ser vazia.")
-    private String especialidade;
-    
+    @NotBlank(message = "O campo de interesses não pode ser vazio.")
+    private String interesses; // Ex: "Desenvolvimento Web, Carreira, Spring Boot"
+
     // Construtor padrão
-    public Mentor() {}
+    public Mentorado() {}
 
     // Getters e Setters
-    public String getEspecialidade() {
-        return especialidade;
+    public String getInteresses() {
+        return interesses;
     }
 
-    public void setEspecialidade(String especialidade) {
-        this.especialidade = especialidade;
+    public void setInteresses(String interesses) {
+        this.interesses = interesses;
     }
 
-    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "mentorado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mentoria> mentorias = new ArrayList<>();
 
     // Getter e Setter para a lista
@@ -42,6 +39,3 @@ public class Mentor extends Usuario {
         this.mentorias = mentorias;
     }
 }
-
-
-
