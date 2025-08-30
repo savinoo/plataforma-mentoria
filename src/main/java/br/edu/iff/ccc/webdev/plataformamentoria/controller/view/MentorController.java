@@ -1,30 +1,52 @@
+// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/controller/view/MentorController.java
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/mentores")
 public class MentorController {
 
-    @GetMapping("/dashboard")
-    public String showMentorDashboard(Model model) {
-        // Lógica para buscar solicitações de mentoria pendentes
-        return "mentor/dashboard"; // -> templates/mentor/dashboard.html
+    @Autowired
+    private MentorService mentorService;
+
+    // Exibe a lista de todos os mentores (GET)
+    @GetMapping
+    public String showMentoresPage(Model model) {
+        model.addAttribute("mentores", mentorService.findAllMentores());
+        return "mentor/mentores"; // -> templates/mentor/mentores.html
     }
 
-    @GetMapping("/perfil")
-    public String showMentorProfileForm(Model model) {
-        // Lógica para buscar os dados do mentor logado para edição
-        return "mentor/editar_perfil"; // -> templates/mentor/editar_perfil.html
+    // Exibe o formulário para adicionar um novo mentor (GET)
+    @GetMapping("/new")
+    public String showNewMentorForm(Model model) {
+        model.addAttribute("mentor", new Mentor());
+        return "mentor/mentor_form"; // -> templates/mentor/mentor_form.html
     }
 
-    @PostMapping("/perfil")
-    public String updateMentorProfile() {
-        // Lógica para salvar as alterações do perfil
-        return "redirect:/mentores/dashboard";
+    // Processa o envio do formulário para salvar o mentor (POST)
+    @PostMapping
+    public String saveMentor(@Valid @ModelAttribute("mentor") Mentor mentor,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            // Se houver erros de validação, retorna para o formulário
+            return "mentor/mentor_form";
+        }
+
+        mentorService.saveMentor(mentor);
+        redirectAttributes.addFlashAttribute("successMessage", "Mentor cadastrado com sucesso!");
+        return "redirect:/mentores";
     }
 }
