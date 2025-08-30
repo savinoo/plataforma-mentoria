@@ -1,7 +1,7 @@
 // src/main/java/br/edu/iff/mentorplatform/controller/view/MentoriaController.java
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
-import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentoria;
+import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentoriaFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService; // Crie este serviço
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoriaService;
@@ -28,21 +28,21 @@ public class MentoriaController {
 
     @GetMapping("/new")
     public String showNewMentoriaForm(Model model) {
-        model.addAttribute("mentoria", new Mentoria());
+        model.addAttribute("mentoria", new MentoriaFormDTO());
         model.addAttribute("allMentores", mentorService.findAllMentores());
         model.addAttribute("allMentorados", mentoradoService.findAllMentorados());
         return "mentoria/mentoria_form"; // -> templates/mentoria/mentoria_form.html
     }
     
     @PostMapping
-    public String saveMentoria(@Valid @ModelAttribute Mentoria mentoria, BindingResult result, Model model) {
+    public String saveMentoria(@Valid @ModelAttribute("mentoria") MentoriaFormDTO mentoriaDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             // Recarrega os dados necessários para o formulário em caso de erro
             model.addAttribute("allMentores", mentorService.findAllMentores());
             model.addAttribute("allMentorados", mentoradoService.findAllMentorados());
             return "mentoria/mentoria_form";
         }
-        mentoriaService.save(mentoria);
+        mentoriaService.save(mentoriaDTO);
         return "redirect:/mentorias";
     }
 }

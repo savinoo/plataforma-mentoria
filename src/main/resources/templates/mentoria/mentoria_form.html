@@ -19,19 +19,19 @@
         </div>
         <div>
             <label for="mentor">Mentor:</label>
-            <select id="mentor" th:field="*{mentor}">
+            <select id="mentor" th:field="*{mentorId}">
                 <option value="">Selecione um Mentor</option>
                 <option th:each="m : ${allMentores}" th:value="${m.id}" th:text="${m.nome}"></option>
             </select>
-            <p class="error" th:if="${#fields.hasErrors('mentor')}" th:errors="*{mentor}"></p>
+            <p class="error" th:if="${#fields.hasErrors('mentorId')}" th:errors="*{mentorId}"></p>
         </div>
         <div>
             <label for="mentorado">Mentorado:</label>
-            <select id="mentorado" th:field="*{mentorado}">
+            <select id="mentorado" th:field="*{mentoradoId}">
                 <option value="">Selecione um Mentorado</option>
                 <option th:each="mdo : ${allMentorados}" th:value="${mdo.id}" th:text="${mdo.nome}"></option>
             </select>
-            <p class="error" th:if="${#fields.hasErrors('mentorado')}" th:errors="*{mentorado}"></p>
+            <p class="error" th:if="${#fields.hasErrors('mentoradoId')}" th:errors="*{mentoradoId}"></p>
         </div>
         <br/>
         <button type="submit">Agendar</button>

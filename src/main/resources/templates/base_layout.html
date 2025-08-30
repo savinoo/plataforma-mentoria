@@ -2,7 +2,7 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org" th:fragment="base(titulo, conteudo)">
 <head>
     <meta charset="UTF-8">
-    <title th:replace="${titulo}">Plataforma de Mentoria</title>
+    <title th:text="${titulo}">Plataforma de Mentoria</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 </head>
 <body class="bg-gray-100">
@@ -13,6 +13,9 @@
                 <a th:href="@{/home}">Plataforma de Mentoria</a>
             </h1>
             <nav class="flex items-center gap-9">
+                <a class="text-sm font-medium" th:href="@{/home}">Home</a>
+                <a class="text-sm font-medium" th:href="@{/mentores}">Mentores</a>
+                <a class="text-sm font-medium" th:href="@{/mentorias}">Mentorias</a>
                 <a class="text-sm font-medium" th:href="@{/mentorados/busca}">Buscar Mentores</a>
                 <a class="text-sm font-medium" th:href="@{/auth/login}">Login</a>
                 <a class="text-sm font-medium" th:href="@{/auth/register}">Registrar</a>

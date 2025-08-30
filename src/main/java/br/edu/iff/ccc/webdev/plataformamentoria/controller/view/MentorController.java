@@ -1,7 +1,7 @@
 // src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/controller/view/MentorController.java
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
-import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +31,13 @@ public class MentorController {
     // Exibe o formulário para adicionar um novo mentor (GET)
     @GetMapping("/new")
     public String showNewMentorForm(Model model) {
-        model.addAttribute("mentor", new Mentor());
+        model.addAttribute("mentor", new MentorFormDTO());
         return "mentor/mentor_form"; // -> templates/mentor/mentor_form.html
     }
 
     // Processa o envio do formulário para salvar o mentor (POST)
     @PostMapping
-    public String saveMentor(@Valid @ModelAttribute("mentor") Mentor mentor,
+    public String saveMentor(@Valid @ModelAttribute("mentor") MentorFormDTO mentorDTO,
                              BindingResult result,
                              RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
@@ -45,7 +45,7 @@ public class MentorController {
             return "mentor/mentor_form";
         }
 
-        mentorService.saveMentor(mentor);
+        mentorService.saveMentor(mentorDTO);
         redirectAttributes.addFlashAttribute("successMessage", "Mentor cadastrado com sucesso!");
         return "redirect:/mentores";
     }

@@ -5,10 +5,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping() // Removido o "/home" daqui para o controller responder na raiz
 public class HomeController {
 
-    @GetMapping
+    @GetMapping("/")
+    public String redirectToHome() {
+        return "redirect:/home"; // Redireciona a raiz para /home
+    }
+
+    @GetMapping("/home")
     public String showHomePage() {
         return "home"; // Nome do arquivo HTML sem a extensão
     }

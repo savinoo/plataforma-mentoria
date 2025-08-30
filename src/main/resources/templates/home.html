@@ -1,17 +1,46 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Plataforma de Mentoria</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" th:replace="~{base_layout :: base(titulo = 'Home', conteudo = ~{::main})}">
+
 <body>
-    <header>
-        <h1>Plataforma de Mentoria</h1>
-    </header>
     <main>
-        <h2>Página em construção</h2>
-        <p>Bem-vindo à nossa plataforma. Em breve, teremos mais novidades!</p>
+        <h1 class="text-2xl font-bold mb-4">Bem-vindo à Plataforma de Mentoria</h1>
+        <p class="mb-6">Utilize os links abaixo para navegar pelas funcionalidades do sistema.</p>
+
+        <div class="space-y-6">
+            <div>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-3">Navegação Geral</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a th:href="@{/home}" class="text-blue-600 hover:underline">Página Inicial</a></li>
+                    <li><a th:href="@{/auth/login}" class="text-blue-600 hover:underline">Login</a></li>
+                    <li><a th:href="@{/auth/register}" class="text-blue-600 hover:underline">Registrar-se</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-3">Mentores</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a th:href="@{/mentores}" class="text-blue-600 hover:underline">Ver Lista de Mentores</a></li>
+                    <li><a th:href="@{/mentores/new}" class="text-blue-600 hover:underline">Cadastrar Novo Mentor</a></li>
+                    <li><a th:href="@{/mentorados/busca}" class="text-blue-600 hover:underline">Buscar Mentores (Visão do Mentorado)</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-3">Mentorias</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a th:href="@{/mentorias}" class="text-blue-600 hover:underline">Ver Mentorias Agendadas</a></li>
+                    <li><a th:href="@{/mentorias/new}" class="text-blue-600 hover:underline">Agendar Nova Mentoria</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-3">Área Administrativa</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a th:href="@{/admin/dashboard}" class="text-blue-600 hover:underline">Dashboard do Admin</a></li>
+                    <li><a th:href="@{/admin/usuarios}" class="text-blue-600 hover:underline">Listar Usuários</a></li>
+                </ul>
+            </div>
+        </div>
     </main>
 </body>
 </html>
