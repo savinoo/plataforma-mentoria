@@ -2,8 +2,6 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.OneToMany;
@@ -13,6 +11,7 @@ import jakarta.persistence.Column;
 @Entity
 public class Mentorado extends Usuario {
 
+    // Informações Acadêmicas e de Carreira
     private String areasDeInteresse; 
     private String disciplinasDeMaiorDificuldade;
     private String conquistasAcademicas;
@@ -25,18 +24,22 @@ public class Mentorado extends Usuario {
     @Column(columnDefinition = "boolean default false")
     private boolean onboardingCompleto = false;
 
+    // Campos de Controle de Privacidade
+    @Column(columnDefinition = "boolean default false")
+    private boolean visibilidadeInfoAcademica = false;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean visibilidadeAspiracoesCarreira = false;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean visibilidadeCompetencias = false;
+
     // Construtor padrão
     public Mentorado() {}
 
-    // Getters e Setters
-    public String getAreasDeInteresse() {
-        return areasDeInteresse;
-    }
-
-    public void setAreasDeInteresse(String areasDeInteresse) {
-        this.areasDeInteresse = areasDeInteresse;
-    }
-
+    // Getters e Setters para os campos de perfil...
+    public String getAreasDeInteresse() { return areasDeInteresse; }
+    public void setAreasDeInteresse(String areasDeInteresse) { this.areasDeInteresse = areasDeInteresse; }
     public String getDisciplinasDeMaiorDificuldade() { return disciplinasDeMaiorDificuldade; }
     public void setDisciplinasDeMaiorDificuldade(String disciplinasDeMaiorDificuldade) { this.disciplinasDeMaiorDificuldade = disciplinasDeMaiorDificuldade; }
     public String getConquistasAcademicas() { return conquistasAcademicas; }
@@ -54,15 +57,17 @@ public class Mentorado extends Usuario {
     public boolean isOnboardingCompleto() { return onboardingCompleto; }
     public void setOnboardingCompleto(boolean onboardingCompleto) { this.onboardingCompleto = onboardingCompleto; }
 
+    // Getters e Setters para os campos de privacidade
+    public boolean isVisibilidadeInfoAcademica() { return visibilidadeInfoAcademica; }
+    public void setVisibilidadeInfoAcademica(boolean visibilidadeInfoAcademica) { this.visibilidadeInfoAcademica = visibilidadeInfoAcademica; }
+    public boolean isVisibilidadeAspiracoesCarreira() { return visibilidadeAspiracoesCarreira; }
+    public void setVisibilidadeAspiracoesCarreira(boolean visibilidadeAspiracoesCarreira) { this.visibilidadeAspiracoesCarreira = visibilidadeAspiracoesCarreira; }
+    public boolean isVisibilidadeCompetencias() { return visibilidadeCompetencias; }
+    public void setVisibilidadeCompetencias(boolean visibilidadeCompetencias) { this.visibilidadeCompetencias = visibilidadeCompetencias; }
+
     @OneToMany(mappedBy = "mentorado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mentoria> mentorias = new ArrayList<>();
 
-    // Getter e Setter para a lista
-    public List<Mentoria> getMentorias() {
-    return mentorias;
-}
-
-    public void setMentorias(List<Mentoria> mentorias) {
-        this.mentorias = mentorias;
-    }
+    public List<Mentoria> getMentorias() { return mentorias; }
+    public void setMentorias(List<Mentoria> mentorias) { this.mentorias = mentorias; }
 }

@@ -1,5 +1,4 @@
-// CORREÇÃO PARA:
-// savinoo/plataforma-mentoria/plataforma-mentoria-BranchTestes/src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/MentoradoService.java
+// savinoo/plataforma-mentoria/plataforma-mentoria-login/src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/MentoradoService.java
 
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
@@ -39,6 +38,7 @@ public class MentoradoService {
         Optional<Mentorado> mentoradoOpt = mentoradoRepository.findById(mentoradoAtualizado.getId());
         if (mentoradoOpt.isPresent()) {
             Mentorado mentorado = mentoradoOpt.get();
+            // Atualiza informações do perfil
             mentorado.setAreasDeInteresse(mentoradoAtualizado.getAreasDeInteresse());
             mentorado.setDisciplinasDeMaiorDificuldade(mentoradoAtualizado.getDisciplinasDeMaiorDificuldade());
             mentorado.setConquistasAcademicas(mentoradoAtualizado.getConquistasAcademicas());
@@ -47,6 +47,13 @@ public class MentoradoService {
             mentorado.setEmpresasDeInteresse(mentoradoAtualizado.getEmpresasDeInteresse());
             mentorado.setCompetenciasDesejadas(mentoradoAtualizado.getCompetenciasDesejadas());
             mentorado.setObjetivosMentoria(mentoradoAtualizado.getObjetivosMentoria());
+            
+            // Atualiza configurações de privacidade
+            mentorado.setVisibilidadeInfoAcademica(mentoradoAtualizado.isVisibilidadeInfoAcademica());
+            mentorado.setVisibilidadeAspiracoesCarreira(mentoradoAtualizado.isVisibilidadeAspiracoesCarreira());
+            mentorado.setVisibilidadeCompetencias(mentoradoAtualizado.isVisibilidadeCompetencias());
+
+            // Finaliza o onboarding
             mentorado.setOnboardingCompleto(true);
             mentoradoRepository.save(mentorado);
         }
