@@ -1,15 +1,23 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
+import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentoradoRepository;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/mentorados")
 public class MentoradoController {
+
+    @Autowired
+    private MentoradoService mentoradoService;
 
     @GetMapping("/dashboard")
     public String showMentoradoDashboard(Model model) {
@@ -38,9 +46,23 @@ public class MentoradoController {
     // Novo método para a página de onboarding
     @GetMapping("/onboarding")
     public String showOnboardingPage(Model model) {
-        // Aqui, você pode buscar o mentorado logado e adicioná-lo ao modelo
-        // para preencher um formulário de edição de perfil.
-        // model.addAttribute("mentorado", ...);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        Optional<Mentorado> mentoradoOpt = mentoradoService.findByEmail(currentUserName);
+
+        if (mentoradoOpt.isPresent()) {
+            model.addAttribute("mentorado", mentoradoOpt.get());
+        } else {
+            // Lida com o caso de não encontrar o mentorado, talvez redirecionando para o erro
+            return "redirect:/error";
+        }
         return "mentorado/onboarding"; // -> templates/mentorado/onboarding.html
+    }
+
+    @PostMapping("/onboarding")
+    public String processOnboarding(@ModelAttribute Mentorado mentoradoAtualizado, RedirectAttributes redirectAttributes) {
+        mentoradoService.updateOnboarding(mentoradoAtualizado);
+        redirectAttributes.addFlashAttribute("successMessage", "Perfil atualizado com sucesso!");
+        return "redirect:/mentorados/dashboard";
     }
 }

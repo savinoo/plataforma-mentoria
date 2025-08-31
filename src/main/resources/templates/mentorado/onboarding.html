@@ -9,30 +9,57 @@
 
             <div th:if="${successMessage}" class="mb-4 rounded-md bg-green-100 p-3 text-sm text-green-700" th:text="${successMessage}"></div>
 
-            <form action="#" method="post" class="space-y-4">
+            <form th:action="@{/mentorados/onboarding}" th:object="${mentorado}" method="post" class="space-y-4">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{nome}" />
+                <input type="hidden" th:field="*{email}" />
+                <input type="hidden" th:field="*{senha}" />
+                <input type="hidden" th:field="*{papeis}" />
+
                 <div>
                     <h2 class="text-xl font-semibold border-b pb-2 mb-3">Informação Académica</h2>
-                    <label for="interesses" class="block font-medium">Áreas de Interesse (separadas por vírgula):</label>
-                    <input type="text" id="interesses" name="interesses" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Desenvolvimento Web, IA, Gestão de Projetos" />
+                    <p class="text-sm text-gray-600 mb-4">Estas informações ajudarão os mentores a entenderem seu contexto académico.</p>
+                    
+                    <label for="areasDeInteresse" class="block font-medium">Áreas de Interesse (separadas por vírgula):</label>
+                    <input type="text" id="areasDeInteresse" th:field="*{areasDeInteresse}" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Desenvolvimento Web, IA, Gestão de Projetos" />
+                    
+                    <label for="disciplinasDeMaiorDificuldade" class="block font-medium mt-4">Disciplinas de Maior Dificuldade:</label>
+                    <input type="text" id="disciplinasDeMaiorDificuldade" th:field="*{disciplinasDeMaiorDificuldade}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+
+                    <label for="conquistasAcademicas" class="block font-medium mt-4">Conquistas Académicas:</label>
+                    <input type="text" id="conquistasAcademicas" th:field="*{conquistasAcademicas}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
                 </div>
 
                 <div>
                     <h2 class="text-xl font-semibold border-b pb-2 mb-3 mt-6">Aspirações de Carreira</h2>
-                    <label for="industrias" class="block font-medium">Indústrias de Interesse:</label>
-                    <input type="text" id="industrias" name="industrias" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Tecnologia, Finanças, Saúde" />
+                    <p class="text-sm text-gray-600 mb-4">Partilhe suas aspirações para que os mentores possam orientá-lo melhor em sua carreira.</p>
+
+                    <label for="industriasDeInteresse" class="block font-medium">Indústrias de Interesse:</label>
+                    <input type="text" id="industriasDeInteresse" th:field="*{industriasDeInteresse}" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Tecnologia, Finanças, Saúde" />
+
+                    <label for="caminhosDeCarreira" class="block font-medium mt-4">Caminhos de Carreira Desejados:</label>
+                    <input type="text" id="caminhosDeCarreira" th:field="*{caminhosDeCarreira}" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Gestão de Produto, Engenharia de Software" />
+                
+                    <label for="empresasDeInteresse" class="block font-medium mt-4">Empresas de Interesse:</label>
+                    <input type="text" id="empresasDeInteresse" th:field="*{empresasDeInteresse}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
                 </div>
 
                 <div>
-                    <h2 class="text-xl font-semibold border-b pb-2 mb-3 mt-6">Objetivos da Mentoria</h2>
-                    <label for="objetivos" class="block font-medium">O que espera alcançar com a mentoria?</label>
-                    <textarea id="objetivos" name="objetivos" rows="4" class="form-textarea mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Conseguir um estágio, melhorar meu CV, preparar-me para entrevistas..."></textarea>
+                    <h2 class="text-xl font-semibold border-b pb-2 mb-3 mt-6">Competências e Objetivos</h2>
+                     <p class="text-sm text-gray-600 mb-4">Defina o que você quer aprender e alcançar com a ajuda de um mentor.</p>
+
+                    <label for="competenciasDesejadas" class="block font-medium">Competências que Deseja Desenvolver:</label>
+                    <input type="text" id="competenciasDesejadas" th:field="*{competenciasDesejadas}" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Programação em Python, Oratória" />
+                
+                    <label for="objetivosMentoria" class="block font-medium mt-4">O que espera alcançar com a mentoria?</label>
+                    <textarea id="objetivosMentoria" th:field="*{objetivosMentoria}" rows="4" class="form-textarea mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Conseguir um estágio, melhorar meu CV, preparar-me para entrevistas..."></textarea>
                 </div>
 
-
-                <div class="pt-4">
+                <div class="pt-4 flex justify-between items-center">
                     <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700">
                         Salvar e Concluir
                     </button>
+                    <a th:href="@{/mentorados/dashboard}" class="text-sm text-gray-600 hover:underline">Completar mais tarde</a>
                 </div>
             </form>
         </div>

@@ -49,7 +49,7 @@ public class SsoController {
         // Gera uma senha aleatória e segura, já que o login será via SSO.
         novoMentorado.setSenha(passwordEncoder.encode(UUID.randomUUID().toString()));
         novoMentorado.addPapel("MENTORADO");
-        novoMentorado.setInteresses("Ainda não definido"); // Valor padrão
+        novoMentorado.setAreasDeInteresse("Ainda não definido"); // Valor padrão
 
         mentoradoService.saveMentorado(novoMentorado);
 

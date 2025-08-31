@@ -74,7 +74,7 @@ public class AuthController {
         novoMentorado.setEmail(usuarioDTO.getEmail());
         novoMentorado.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         novoMentorado.addPapel("MENTORADO");
-        novoMentorado.setInteresses("Ainda não definido"); // Valor padrão mais claro
+        novoMentorado.setAreasDeInteresse("Ainda não definido"); // Valor padrão mais claro
 
         mentoradoService.saveMentorado(novoMentorado);
 
