@@ -43,6 +43,12 @@ public abstract class Usuario implements Serializable {
 
     private LocalDateTime tempoBloqueio;
 
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+    @Column(name = "reset_password_token_expiry")
+    private LocalDateTime resetPasswordTokenExpiry;
+
     // Getters e Setters para os novos campos
     public int getTentativasFalhas() { return tentativasFalhas; }
     public void setTentativasFalhas(int tentativasFalhas) { this.tentativasFalhas = tentativasFalhas; }
@@ -60,8 +66,9 @@ public abstract class Usuario implements Serializable {
     public void setSenha(String senha) { this.senha = senha; }
     public Set<String> getPapeis() { return papeis; }
     public void setPapeis(Set<String> papeis) { this.papeis = papeis; }
-
-    public void addPapel(String papel) {
-        this.papeis.add(papel);
-    }
+    public void addPapel(String papel) { this.papeis.add(papel); }
+    public String getResetPasswordToken() { return resetPasswordToken; }
+    public void setResetPasswordToken(String resetPasswordToken) { this.resetPasswordToken = resetPasswordToken; }
+    public LocalDateTime getResetPasswordTokenExpiry() { return resetPasswordTokenExpiry; }
+    public void setResetPasswordTokenExpiry(LocalDateTime resetPasswordTokenExpiry) { this.resetPasswordTokenExpiry = resetPasswordTokenExpiry; }
 }
