@@ -24,7 +24,7 @@ public abstract class Usuario implements Serializable {
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank(message = "O email não pode ser vazio.")
+    @NotBlank(message = "O email не pode ser vazio.")
     @Email(message = "Email inválido.")
     @Column(nullable = false, unique = true)
     private String email;
@@ -49,11 +49,20 @@ public abstract class Usuario implements Serializable {
     @Column(name = "reset_password_token_expiry")
     private LocalDateTime resetPasswordTokenExpiry;
 
+    // NOVO CAMPO ADICIONADO
+    @Column(columnDefinition = "boolean default false")
+    private boolean banido = false;
+
+
     // Getters e Setters para os novos campos
     public int getTentativasFalhas() { return tentativasFalhas; }
     public void setTentativasFalhas(int tentativasFalhas) { this.tentativasFalhas = tentativasFalhas; }
     public LocalDateTime getTempoBloqueio() { return tempoBloqueio; }
     public void setTempoBloqueio(LocalDateTime tempoBloqueio) { this.tempoBloqueio = tempoBloqueio; }
+
+    // GETTER E SETTER PARA O NOVO CAMPO
+    public boolean isBanido() { return banido; }
+    public void setBanido(boolean banido) { this.banido = banido; }
 
     // Getters e Setters
     public Long getId() { return id; }

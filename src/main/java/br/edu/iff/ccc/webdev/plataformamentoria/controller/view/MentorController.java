@@ -6,7 +6,6 @@ import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +25,7 @@ public class MentorController {
     @Autowired
     private MentorService mentorService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // MELHORIA: PasswordEncoder não é mais necessário aqui.
     
     private final List<String> areasList = List.of(
         "Transição de Carreira", "Preparação para Entrevistas", "Investigação Académica",
@@ -55,7 +53,7 @@ public class MentorController {
             return "mentor/mentor_form";
         }
         
-        mentorDTO.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
+        // MELHORIA: A codificação da senha foi removida daqui.
         mentorService.saveMentor(mentorDTO);
         
         redirectAttributes.addFlashAttribute("successMessage", "Sua aplicação foi enviada e será revisada por um administrador.");
@@ -75,7 +73,7 @@ public class MentorController {
         
         model.addAttribute("mentor", mentor);
         model.addAttribute("areasList", areasList);
-        model.addAttribute("formatosList", formatosList); // Adicionado para os radio buttons
+        model.addAttribute("formatosList", formatosList);
         return "mentor/perfil_form";
     }
 

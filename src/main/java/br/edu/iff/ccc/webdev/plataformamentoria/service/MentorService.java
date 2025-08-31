@@ -24,13 +24,14 @@ public class MentorService {
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();
-        mentor.setNome(mentorDTO.getNome());
+        // MELHORIA: Concatena nome e sobrenome para salvar o nome completo.
+        mentor.setNome(mentorDTO.getNome() + " " + mentorDTO.getSobrenome());
         mentor.setEmail(mentorDTO.getEmail());
+        // MELHORIA: A senha agora é codificada na camada de serviço.
         mentor.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentor.setEspecialidade(mentorDTO.getEspecialidade());
         mentor.addPapel("MENTOR");
         mentor.setAprovado(false);
-        // CORREÇÃO: Define explicitamente o status na criação
         mentor.setStatusDisponibilidade("Disponível");
         return mentorRepository.save(mentor);
     }
@@ -61,7 +62,6 @@ public class MentorService {
         mentor.setFormatosReuniao(profileData.getFormatosReuniao());
         mentor.setMaxMentorados(profileData.getMaxMentorados());
 
-        // CORREÇÃO: Garante que o status não seja nulo, corrigindo registos antigos
         if (mentor.getStatusDisponibilidade() == null) {
             mentor.setStatusDisponibilidade("Disponível");
         }

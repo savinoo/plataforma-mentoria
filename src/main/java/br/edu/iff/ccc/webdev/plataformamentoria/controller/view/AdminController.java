@@ -2,8 +2,9 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.Usuario;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentorRepository;
-import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
+import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -20,9 +23,11 @@ public class AdminController {
     @Autowired
     private MentorRepository mentorRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository; // Repositório de usuários injetado
+
     @GetMapping("/dashboard")
     public String showAdminDashboard(Model model) {
-        // Lista mentores que precisam de aprovação
         model.addAttribute("pendingMentors", mentorRepository.findByAprovadoIsFalse());
         return "admin/dashboard";
     }
@@ -35,5 +40,46 @@ public class AdminController {
         mentorRepository.save(mentor);
         redirectAttributes.addFlashAttribute("successMessage", "Mentor aprovado com sucesso!");
         return "redirect:/admin/dashboard";
+    }
+    
+    // NOVO MÉTODO para listar usuários
+    @GetMapping("/usuarios")
+    public String listUsers(Model model) {
+        model.addAttribute("usuarios", usuarioRepository.findAll());
+        return "admin/usuarios";
+    }
+
+    // NOVO MÉTODO para suspender/reativar um usuário
+    @PostMapping("/usuarios/{id}/toggle-suspend")
+    public String toggleSuspendUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ID de Usuário inválido:" + id));
+
+        if (usuario.getTempoBloqueio() == null) {
+            usuario.setTempoBloqueio(LocalDateTime.now().plusYears(100)); // Suspende "indefinidamente"
+            redirectAttributes.addFlashAttribute("successMessage", "Usuário suspenso com sucesso.");
+        } else {
+            usuario.setTempoBloqueio(null);
+            usuario.setTentativasFalhas(0);
+            redirectAttributes.addFlashAttribute("successMessage", "Suspensão do usuário removida.");
+        }
+        usuarioRepository.save(usuario);
+        return "redirect:/admin/usuarios";
+    }
+
+    // NOVO MÉTODO para banir um usuário
+    @PostMapping("/usuarios/{id}/toggle-ban")
+    public String toggleBanUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ID de Usuário inválido:" + id));
+        
+        usuario.setBanido(!usuario.isBanido());
+        if (usuario.isBanido()) {
+            redirectAttributes.addFlashAttribute("successMessage", "Usuário banido com sucesso.");
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "Banimento do usuário removido.");
+        }
+        usuarioRepository.save(usuario);
+        return "redirect:/admin/usuarios";
     }
 }

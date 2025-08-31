@@ -5,6 +5,7 @@ package br.edu.iff.ccc.webdev.plataformamentoria.service;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Usuario;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -26,6 +27,11 @@ public class UsuarioService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
+
+        // VERIFICAÇÃO ADICIONADA: Lança exceção se o usuário estiver banido.
+        if (usuario.isBanido()) {
+            throw new DisabledException("A conta foi banida.");
+        }
 
         if (usuario.getTempoBloqueio() != null && usuario.getTempoBloqueio().isAfter(LocalDateTime.now())) {
             throw new LockedException("A conta está bloqueada.");

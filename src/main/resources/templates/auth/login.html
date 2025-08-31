@@ -11,9 +11,15 @@
         <div th:if="${param.error}" class="mb-4 rounded-md bg-red-100 p-3 text-sm text-red-700">
             Email ou senha inválidos. Verifique as suas credenciais.
         </div>
+        
         <div th:if="${param.locked}" class="mb-4 rounded-md bg-yellow-100 p-3 text-sm text-yellow-700">
-            Esta conta foi temporariamente bloqueada devido a múltiplas tentativas de login falhadas.
+            Esta conta foi suspensa ou bloqueada temporariamente.
         </div>
+
+        <div th:if="${param.banned}" class="mb-4 rounded-md bg-red-100 p-3 text-sm text-red-700">
+            Esta conta foi banida e não pode mais aceder à plataforma.
+        </div>
+        
         <div th:if="${successMessage}" class="mb-4 rounded-md bg-green-100 p-3 text-sm text-green-700">
             <span th:text="${successMessage}"></span>
         </div>
