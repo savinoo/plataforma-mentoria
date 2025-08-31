@@ -7,6 +7,25 @@
 
         <div th:if="${successMessage}" class="mb-4 rounded-md bg-green-100 p-3 text-sm text-green-700" th:text="${successMessage}"></div>
 
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-3">Métricas do Algoritmo de Recomendação</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="rounded-lg bg-white p-4 shadow">
+                    <h3 class="text-sm font-medium text-gray-500">Pedidos via Recomendação</h3>
+                    <p class="mt-1 text-3xl font-semibold text-gray-900" th:text="${totalRecomendacoes}">0</p>
+                </div>
+                <div class="rounded-lg bg-white p-4 shadow">
+                    <h3 class="text-sm font-medium text-gray-500">Pedidos Aceites</h3>
+                    <p class="mt-1 text-3xl font-semibold text-gray-900" th:text="${aceitosRecomendacoes}">0</p>
+                </div>
+                <div class="rounded-lg bg-white p-4 shadow">
+                    <h3 class="text-sm font-medium text-gray-500">Taxa de Sucesso</h3>
+                    <p class="mt-1 text-3xl font-semibold text-gray-900" th:text="${#numbers.formatDecimal(taxaSucessoRecomendacoes, 1, 2)} + '%'">0.00%</p>
+                </div>
+            </div>
+        </div>
+
+
         <div class="overflow-hidden rounded-lg bg-white shadow">
             <div class="px-4 py-5 sm:p-6">
                 <h2 class="text-xl font-semibold">Aplicações de Mentores Pendentes</h2>

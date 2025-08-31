@@ -5,6 +5,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Usuario;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentorRepository;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.PedidoMentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,11 +25,24 @@ public class AdminController {
     private MentorRepository mentorRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Repositório de usuários injetado
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PedidoMentoriaService pedidoMentoriaService;
 
     @GetMapping("/dashboard")
     public String showAdminDashboard(Model model) {
         model.addAttribute("pendingMentors", mentorRepository.findByAprovadoIsFalse());
+        
+        long totalRecomendacoes = pedidoMentoriaService.getTotalPedidosDeRecomendacoes();
+        long aceitosRecomendacoes = pedidoMentoriaService.getTotalPedidosAceitosDeRecomendacoes();
+
+        model.addAttribute("totalRecomendacoes", totalRecomendacoes);
+        model.addAttribute("aceitosRecomendacoes", aceitosRecomendacoes);
+        
+        double taxaSucesso = (totalRecomendacoes > 0) ? ((double) aceitosRecomendacoes / totalRecomendacoes) * 100 : 0;
+        model.addAttribute("taxaSucessoRecomendacoes", taxaSucesso);
+
         return "admin/dashboard";
     }
 
@@ -42,21 +56,19 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
     
-    // NOVO MÉTODO para listar usuários
     @GetMapping("/usuarios")
     public String listUsers(Model model) {
         model.addAttribute("usuarios", usuarioRepository.findAll());
         return "admin/usuarios";
     }
 
-    // NOVO MÉTODO para suspender/reativar um usuário
     @PostMapping("/usuarios/{id}/toggle-suspend")
     public String toggleSuspendUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         Usuario usuario = usuarioRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("ID de Usuário inválido:" + id));
 
         if (usuario.getTempoBloqueio() == null) {
-            usuario.setTempoBloqueio(LocalDateTime.now().plusYears(100)); // Suspende "indefinidamente"
+            usuario.setTempoBloqueio(LocalDateTime.now().plusYears(100));
             redirectAttributes.addFlashAttribute("successMessage", "Usuário suspenso com sucesso.");
         } else {
             usuario.setTempoBloqueio(null);
@@ -67,7 +79,6 @@ public class AdminController {
         return "redirect:/admin/usuarios";
     }
 
-    // NOVO MÉTODO para banir um usuário
     @PostMapping("/usuarios/{id}/toggle-ban")
     public String toggleBanUser(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         Usuario usuario = usuarioRepository.findById(id)

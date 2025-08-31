@@ -2,7 +2,9 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.PedidoMentoria;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.PedidoMentoriaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -25,7 +24,8 @@ public class MentorController {
     @Autowired
     private MentorService mentorService;
 
-    // MELHORIA: PasswordEncoder não é mais necessário aqui.
+    @Autowired
+    private PedidoMentoriaService pedidoMentoriaService;
     
     private final List<String> areasList = List.of(
         "Transição de Carreira", "Preparação para Entrevistas", "Investigação Académica",
@@ -53,7 +53,6 @@ public class MentorController {
             return "mentor/mentor_form";
         }
         
-        // MELHORIA: A codificação da senha foi removida daqui.
         mentorService.saveMentor(mentorDTO);
         
         redirectAttributes.addFlashAttribute("successMessage", "Sua aplicação foi enviada e será revisada por um administrador.");
@@ -61,8 +60,27 @@ public class MentorController {
     }
 
     @GetMapping("/dashboard")
-    public String showMentorDashboard() {
+    public String showMentorDashboard(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        mentorService.findByEmail(email).ifPresent(mentor -> {
+            List<PedidoMentoria> pedidos = pedidoMentoriaService.findPedidosPendentesByMentor(mentor);
+            model.addAttribute("pedidosPendentes", pedidos);
+        });
         return "mentor/dashboard";
+    }
+
+    @PostMapping("/pedidos/{id}/aceitar")
+    public String aceitarPedido(@PathVariable("id") Long pedidoId, RedirectAttributes redirectAttributes) {
+        pedidoMentoriaService.aceitarPedido(pedidoId);
+        redirectAttributes.addFlashAttribute("successMessage", "Pedido de mentoria aceite com sucesso!");
+        return "redirect:/mentores/dashboard";
+    }
+
+    @PostMapping("/pedidos/{id}/recusar")
+    public String recusarPedido(@PathVariable("id") Long pedidoId, RedirectAttributes redirectAttributes) {
+        pedidoMentoriaService.recusarPedido(pedidoId);
+        redirectAttributes.addFlashAttribute("successMessage", "Pedido de mentoria recusado.");
+        return "redirect:/mentores/dashboard";
     }
 
     @GetMapping("/perfil")

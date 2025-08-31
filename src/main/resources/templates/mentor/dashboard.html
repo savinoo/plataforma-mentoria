@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" th:replace="~{base_layout :: base(titulo = 'Dashboard do Mentor', conteudo = ~{::main})}">
 <body>
 <main>
-    <div class="rounded-lg bg-white p-6 shadow-md">
+    <div class="rounded-lg bg-white p-6 shadow-md mb-6">
         <h1 class="text-2xl font-bold mb-4">Dashboard do Mentor</h1>
         <p class="mb-6">Bem-vindo(a) à sua área. Aqui poderá gerir os seus mentorados, agendamentos e o seu perfil.</p>
 
@@ -11,14 +11,35 @@
                 <h2 class="font-bold">Editar Meu Perfil</h2>
                 <p class="text-sm">Atualize as suas informações, competências e áreas de especialização.</p>
             </a>
-            <a href="#" class="block rounded-lg bg-gray-100 p-4 text-gray-800">
-                <h2 class="font-bold">Ver Pedidos de Mentoria (em breve)</h2>
-                <p class="text-sm">Analise e responda aos pedidos de novos mentorados.</p>
-            </a>
-            <a href="#" class="block rounded-lg bg-gray-100 p-4 text-gray-800">
-                <h2 class="font-bold">Meus Agendamentos (em breve)</h2>
-                <p class="text-sm">Consulte as suas próximas sessões de mentoria.</p>
-            </a>
+        </div>
+    </div>
+    
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Pedidos de Mentoria Pendentes</h2>
+        <div th:if="${successMessage}" class="mb-4 rounded-md bg-green-100 p-3 text-sm text-green-700" th:text="${successMessage}"></div>
+
+        <div class="space-y-4">
+            <div th:if="${#lists.isEmpty(pedidosPendentes)}" class="rounded-lg bg-white p-6 shadow-md text-center text-gray-500">
+                <p>Não existem pedidos de mentoria pendentes no momento.</p>
+            </div>
+            
+            <div th:each="pedido : ${pedidosPendentes}" class="rounded-lg bg-white p-6 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500" th:text="'Pedido de ' + ${pedido.mentorado.nome}"></p>
+                        <p class="mt-2 text-gray-700 italic">"<span th:text="${pedido.mensagem}"></span>"</p>
+                        <a href="#" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Ver Perfil do Mentorado (em breve)</a>
+                    </div>
+                    <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                        <form th:action="@{/mentores/pedidos/{id}/recusar(id=${pedido.id})}" method="post">
+                            <button type="submit" class="rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 hover:bg-gray-300">Recusar</button>
+                        </form>
+                        <form th:action="@{/mentores/pedidos/{id}/aceitar(id=${pedido.id})}" method="post">
+                            <button type="submit" class="rounded-lg bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700">Aceitar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>

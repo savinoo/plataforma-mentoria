@@ -5,6 +5,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.PedidoMentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +26,9 @@ public class MentoradoController {
 
     @Autowired
     private MentorService mentorService;
+    
+    @Autowired
+    private PedidoMentoriaService pedidoMentoriaService;
 
     @GetMapping("/dashboard")
     public String showMentoradoDashboard(Model model, Authentication authentication) {
@@ -36,11 +39,35 @@ public class MentoradoController {
                 List<RecomendacaoDTO> recomendacoes = mentorService.recomendarMentores(mentorado);
                 model.addAttribute("recomendacoes", recomendacoes);
             }
+            // Adiciona a lista de pedidos enviados ao dashboard
+            model.addAttribute("pedidosEnviados", pedidoMentoriaService.findPedidosByMentorado(mentorado));
         });
         return "mentorado/dashboard";
     }
 
-    // ... (restante dos métodos do controller) ...
+    @PostMapping("/solicitar-mentoria")
+    public String solicitarMentoria(@RequestParam("mentorId") Long mentorId,
+                                    @RequestParam("mensagem") String mensagem,
+                                    @RequestParam(value = "isRecomendacao", defaultValue = "false") boolean isRecomendacao,
+                                    Authentication authentication,
+                                    RedirectAttributes redirectAttributes) {
+        String email = authentication.getName();
+        Mentorado mentorado = mentoradoService.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Mentorado não encontrado"));
+        Mentor mentor = mentorService.findMentorById(mentorId)
+            .orElseThrow(() -> new RuntimeException("Mentor não encontrado"));
+        
+        try {
+            pedidoMentoriaService.criarPedido(mentorado, mentor, mensagem, isRecomendacao);
+            redirectAttributes.addFlashAttribute("successMessage", "Pedido de mentoria enviado com sucesso!");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/mentorados/mentores/" + mentorId;
+    }
+
+    // ... (restante dos métodos) ...
     @GetMapping("/busca")
     public String searchMentores(
             @RequestParam(value = "termo", required = false) String termo,
@@ -69,11 +96,6 @@ public class MentoradoController {
             .orElseThrow(() -> new IllegalArgumentException("ID de Mentor inválido:" + id));
         model.addAttribute("mentor", mentor);
         return "mentor/perfil_publico";
-    }
-
-    @PostMapping("/solicitar")
-    public String requestMentoria() {
-        return "redirect:/mentorados/dashboard?success";
     }
 
     @GetMapping("/onboarding")
