@@ -2,7 +2,9 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
+import br.edu.iff.ccc.webdev.plataformamentoria.dto.RecomendacaoDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -11,8 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MentorService {
@@ -23,7 +26,7 @@ public class MentorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ... (métodos saveMentor, findAprovados, etc. permanecem os mesmos) ...
+    // ... (outros métodos do serviço) ...
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();
@@ -48,7 +51,7 @@ public class MentorService {
     public Optional<Mentor> findByEmail(String email) {
         return mentorRepository.findByEmail(email);
     }
-
+    
     @Transactional
     public void updateProfile(String email, Mentor profileData) {
         Mentor mentor = mentorRepository.findByEmail(email)
@@ -71,20 +74,18 @@ public class MentorService {
     }
     
     public List<Mentor> searchMentores(String termo, String especialidade, String status, String sort) {
-        // Converte strings vazias em null para que a consulta JPQL funcione corretamente
         String termoBusca = StringUtils.hasText(termo) ? termo : null;
         String especialidadeFiltro = StringUtils.hasText(especialidade) ? especialidade : null;
         String statusFiltro = StringUtils.hasText(status) ? status : null;
 
         Sort.Direction direction = Sort.Direction.ASC;
-        String sortProperty = "nome"; // Relevância por defeito ordena por nome
+        String sortProperty = "nome";
 
-        // Lógica para os outros tipos de ordenação (a ser implementada no futuro)
         if ("avaliacao".equals(sort)) {
-            // sortProperty = "avaliacaoMedia"; // Exemplo para o futuro
+            // sortProperty = "avaliacaoMedia"; 
             // direction = Sort.Direction.DESC;
         } else if ("recente".equals(sort)) {
-            // sortProperty = "ultimaAtividade"; // Exemplo para o futuro
+            // sortProperty = "ultimaAtividade"; 
             // direction = Sort.Direction.DESC;
         }
 
@@ -93,5 +94,58 @@ public class MentorService {
 
     public List<String> getEspecialidades() {
         return mentorRepository.findDistinctEspecialidades();
+    }
+    
+    public List<RecomendacaoDTO> recomendarMentores(Mentorado mentorado) {
+        if (mentorado == null || !mentorado.isOnboardingCompleto()) {
+            return Collections.emptyList();
+        }
+
+        Set<String> interessesMentorado = parseToSet(mentorado.getAreasDeInteresse());
+        Set<String> competenciasMentorado = parseToSet(mentorado.getCompetenciasDesejadas());
+
+        if (interessesMentorado.isEmpty() && competenciasMentorado.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Mentor> todosMentores = mentorRepository.findByAprovadoIsTrueAndIdNot(mentorado.getId());
+
+        return todosMentores.stream()
+            .map(mentor -> {
+                Set<String> areasMentor = mentor.getAreasDeEspecializacao();
+                Set<String> competenciasMentor = parseToSet(mentor.getCompetencias());
+                
+                Set<String> interessesEmComum = new HashSet<>(interessesMentorado);
+                interessesEmComum.retainAll(areasMentor);
+
+                Set<String> competenciasEmComum = new HashSet<>(competenciasMentorado);
+                competenciasEmComum.retainAll(competenciasMentor);
+
+                int score = interessesEmComum.size() + competenciasEmComum.size();
+
+                if (score > 0) {
+                    String justificativa = "Recomendado por afinidade em suas áreas de interesse e competências.";
+                    if (!interessesEmComum.isEmpty()) {
+                        justificativa = "Recomendado pelo interesse em comum em '" + interessesEmComum.iterator().next() + "'.";
+                    } else if (!competenciasEmComum.isEmpty()) {
+                        justificativa = "Recomendado pela sua competência em '" + competenciasEmComum.iterator().next() + "'.";
+                    }
+                    return new AbstractMap.SimpleEntry<>(new RecomendacaoDTO(mentor, justificativa), score);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .sorted(Map.Entry.<RecomendacaoDTO, Integer>comparingByValue().reversed())
+            .limit(5)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
+    }
+
+    private Set<String> parseToSet(String s) {
+        if (!StringUtils.hasText(s)) return Collections.emptySet();
+        return Stream.of(s.split(","))
+                     .map(String::trim)
+                     .filter(StringUtils::hasText)
+                     .collect(Collectors.toSet());
     }
 }

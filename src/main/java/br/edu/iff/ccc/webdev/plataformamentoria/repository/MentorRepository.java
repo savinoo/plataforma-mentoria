@@ -26,8 +26,11 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
         @Param("termo") String termo,
         @Param("especialidade") String especialidade,
         @Param("status") String status,
-        Sort sort); // Adicionado parâmetro de ordenação
+        Sort sort);
 
     @Query("SELECT DISTINCT m.especialidade FROM Mentor m WHERE m.aprovado = true ORDER BY m.especialidade")
     List<String> findDistinctEspecialidades();
+    
+    // Consulta simplificada para buscar todos os mentores elegíveis para recomendação
+    List<Mentor> findByAprovadoIsTrueAndIdNot(Long mentoradoId);
 }

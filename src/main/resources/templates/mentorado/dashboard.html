@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" th:replace="~{base_layout :: base(titulo = 'Dashboard do Mentorado', conteudo = ~{::main})}">
+<body>
+<main>
+    <div class="rounded-lg bg-white p-6 shadow-md mb-6">
+        <h1 class="text-2xl font-bold mb-4" th:text="'Bem-vindo(a), ' + ${mentorado.nome} + '!'">Dashboard do Mentorado</h1>
+        <p class="mb-6">Esta é a sua área pessoal. Acompanhe as suas mentorias e encontre novos mentores.</p>
+        
+        <div th:if="${!mentorado.isOnboardingCompleto()}" class="mb-4 rounded-md bg-yellow-100 p-4 text-sm text-yellow-800">
+            <p><strong>Ainda não terminou!</strong> Para obter as melhores recomendações de mentores, por favor, <a th:href="@{/mentorados/onboarding}" class="font-bold hover:underline">complete o seu perfil</a>.</p>
+        </div>
+
+        <div class="space-y-4">
+            <a th:href="@{/mentorados/busca}" class="block rounded-lg bg-blue-100 p-4 text-blue-800 hover:bg-blue-200">
+                <h2 class="font-bold">Procurar Mentores</h2>
+                <p class="text-sm">Explore a nossa rede de mentores verificados.</p>
+            </a>
+            <a href="#" class="block rounded-lg bg-gray-100 p-4 text-gray-800">
+                <h2 class="font-bold">Minhas Mentorias (em breve)</h2>
+                <p class="text-sm">Acompanhe as suas sessões e o seu progresso.</p>
+            </a>
+        </div>
+    </div>
+    
+    <div th:if="${mentorado.isOnboardingCompleto()}">
+        <h2 class="text-2xl font-bold mb-4">Recomendado para Si</h2>
+        
+        <div th:if="${#lists.isEmpty(recomendacoes)}" class="rounded-lg bg-white p-6 shadow-md text-center text-gray-500">
+            <p>Não encontrámos recomendações automáticas para si no momento. Tente <a th:href="@{/mentorados/busca}" class="text-blue-600 hover:underline">procurar por mentores</a>.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="rec : ${recomendacoes}" class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2" th:text="${rec.mentor.nome}"></h3>
+                    <p class="text-gray-600 mb-4" th:text="${rec.mentor.especialidade}"></p>
+                    <p class="text-sm text-gray-500 italic mb-4" th:text="${rec.justificativa}"></p>
+                    <a th:href="@{/mentorados/mentores/{id}(id=${rec.mentor.id})}" class="font-semibold text-blue-600 hover:underline">Ver Perfil &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

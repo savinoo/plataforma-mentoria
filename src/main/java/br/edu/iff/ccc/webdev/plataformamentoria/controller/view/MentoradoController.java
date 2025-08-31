@@ -1,5 +1,6 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
+import br.edu.iff.ccc.webdev.plataformamentoria.dto.RecomendacaoDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +25,22 @@ public class MentoradoController {
     private MentoradoService mentoradoService;
 
     @Autowired
-    private MentorService mentorService; // Service do Mentor injetado
+    private MentorService mentorService;
 
     @GetMapping("/dashboard")
-    public String showMentoradoDashboard(Model model) {
+    public String showMentoradoDashboard(Model model, Authentication authentication) {
+        String email = authentication.getName();
+        mentoradoService.findByEmail(email).ifPresent(mentorado -> {
+            model.addAttribute("mentorado", mentorado);
+            if (mentorado.isOnboardingCompleto()) {
+                List<RecomendacaoDTO> recomendacoes = mentorService.recomendarMentores(mentorado);
+                model.addAttribute("recomendacoes", recomendacoes);
+            }
+        });
         return "mentorado/dashboard";
     }
 
+    // ... (restante dos métodos do controller) ...
     @GetMapping("/busca")
     public String searchMentores(
             @RequestParam(value = "termo", required = false) String termo,
@@ -44,7 +55,6 @@ public class MentoradoController {
         model.addAttribute("mentores", mentoresEncontrados);
         model.addAttribute("especialidades", todasEspecialidades);
         
-        // Devolve os valores dos filtros para a view
         model.addAttribute("termo", termo);
         model.addAttribute("especialidadeSelecionada", especialidade);
         model.addAttribute("statusSelecionado", status);
@@ -53,7 +63,6 @@ public class MentoradoController {
         return "mentorado/busca_mentores";
     }
 
-    // ... (restante dos métodos do controller) ...
     @GetMapping("/mentores/{id}")
     public String showMentorProfile(@PathVariable("id") Long id, Model model) {
         Mentor mentor = mentorService.findMentorById(id)
