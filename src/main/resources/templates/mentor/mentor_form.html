@@ -1,36 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro de Mentor</title>
-    <style>.error { color: red; }</style>
-</head>
-<body>
-    <h1>Cadastro de Mentor</h1>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" th:replace="~{base_layout :: base(titulo = 'Aplicação para Mentor', conteudo = ~{::main})}">
 
-    <form th:action="@{/mentores}" th:object="${mentor}" method="post">
-        <div>
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" th:field="*{nome}" />
-            <p class="error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></p>
+<body>
+    <main>
+        <div class="rounded-lg bg-white p-6 shadow-md">
+            <h1 class="text-2xl font-bold mb-4">Aplicação para Mentor Externo</h1>
+            <p class="mb-6">Preencha o formulário abaixo. O seu perfil será avaliado pela administração antes de ser ativado.</p>
+
+            <form th:action="@{/mentores}" th:object="${mentor}" method="post" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nome" class="block font-medium">Primeiro Nome:</label>
+                        <input type="text" id="nome" th:field="*{nome}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                        <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></p>
+                    </div>
+                    <div>
+                        <label for="sobrenome" class="block font-medium">Sobrenome:</label>
+                        <input type="text" id="sobrenome" th:field="*{sobrenome}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                        <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('sobrenome')}" th:errors="*{sobrenome}"></p>
+                    </div>
+                </div>
+                <div>
+                    <label for="email" class="block font-medium">Email Profissional:</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                    <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                </div>
+                <div>
+                    <label for="especialidade" class="block font-medium">Área de Especialidade Principal:</label>
+                    <input type="text" id="especialidade" th:field="*{especialidade}" class="form-input mt-1 block w-full rounded-md border-gray-300" placeholder="Ex: Engenharia de Software"/>
+                    <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></p>
+                </div>
+                <div>
+                    <label for="senha" class="block font-medium">Senha:</label>
+                    <input type="password" id="senha" th:field="*{senha}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                    <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></p>
+                </div>
+                <div>
+                    <label for="confirmacaoSenha" class="block font-medium">Confirme a Senha:</label>
+                    <input type="password" id="confirmacaoSenha" th:field="*{confirmacaoSenha}" class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                    <p class="error mt-1 text-sm text-red-600" th:if="${#fields.hasErrors('confirmacaoSenha')}" th:errors="*{confirmacaoSenha}"></p>
+                </div>
+                <br/>
+                <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700">
+                    Enviar Aplicação
+                </button>
+            </form>
         </div>
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" />
-            <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-        </div>
-        <div>
-            <label for="senha">Senha:</label>
-            <input type="password" id="senha" th:field="*{senha}" />
-            <p class="error" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></p>
-        </div>
-         <div>
-            <label for="especialidade">Especialidade:</label>
-            <input type="text" id="especialidade" th:field="*{especialidade}" />
-            <p class="error" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></p>
-        </div>
-        <br/>
-        <button type="submit">Salvar</button>
-    </form>
+    </main>
 </body>
 </html>
