@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/mentores").permitAll()
                 // Admin tem acesso a /admin/**
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                // Mentor tem acesso a seu painel
-                .requestMatchers("/mentores/dashboard").hasRole("MENTOR")
+                // Mentor tem acesso a seu painel e perfil
+                .requestMatchers("/mentores/dashboard", "/mentores/perfil/**").hasRole("MENTOR")
                 // Mentorado tem acesso a seu painel, busca e onboarding
                 .requestMatchers("/mentorados/**").hasRole("MENTORADO")
                 // Qualquer outra requisição exige autenticação
@@ -44,17 +44,16 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/auth/login")
                 .loginProcessingUrl("/login")
-                .successHandler(customAuthenticationSuccessHandler) // Utiliza o novo gestor
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
             
             .logout(logout -> logout
-                .logoutUrl("/logout") // CORRIGIDO: URL de logout para corresponder ao template
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/auth/login?logout")
                 .permitAll()
             )
-            // Configurações para o H2 Console e SSO
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/auth/sso/**"))
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 

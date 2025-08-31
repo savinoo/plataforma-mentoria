@@ -1,16 +1,11 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
-import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,15 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/mentores")
-public class MentorController {
+@RequestMapping("/mentor/perfil")
+public class MentorProfileController {
 
     @Autowired
     private MentorService mentorService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
     // Opções pré-definidas para as áreas de especialização
     private final List<String> areasList = List.of(
         "Transição de Carreira", 
@@ -40,45 +32,6 @@ public class MentorController {
     );
 
     @GetMapping
-    public String showMentoresPage(Model model) {
-        model.addAttribute("mentores", mentorService.findAprovados());
-        return "mentor/mentores";
-    }
-
-    @GetMapping("/new")
-    public String showNewMentorForm(Model model) {
-        model.addAttribute("mentor", new MentorFormDTO());
-        return "mentor/mentor_form";
-    }
-
-    @PostMapping
-    public String saveMentor(@Valid @ModelAttribute("mentor") MentorFormDTO mentorDTO,
-                             BindingResult result,
-                             RedirectAttributes redirectAttributes) {
-        
-        if (!mentorDTO.getSenha().equals(mentorDTO.getConfirmacaoSenha())) {
-            result.addError(new FieldError("mentor", "confirmacaoSenha", "As senhas não coincidem."));
-        }
-
-        if (result.hasErrors()) {
-            return "mentor/mentor_form";
-        }
-        
-        mentorDTO.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
-        mentorService.saveMentor(mentorDTO);
-        
-        redirectAttributes.addFlashAttribute("successMessage", "Sua aplicação foi enviada e será revisada por um administrador.");
-        return "redirect:/auth/login";
-    }
-
-    // MÉTODO ADICIONADO PARA RESOLVER O ERRO 404
-    @GetMapping("/dashboard")
-    public String showMentorDashboard() {
-        return "mentor/dashboard";
-    }
-
-    // MÉTODOS MOVIDOS E AJUSTADOS PARA PERFIL
-    @GetMapping("/perfil")
     public String showProfileForm(Model model, Authentication authentication) {
         String email = authentication.getName();
         Mentor mentor = mentorService.findByEmail(email)
@@ -89,11 +42,11 @@ public class MentorController {
         return "mentor/perfil_form";
     }
 
-    @PostMapping("/perfil")
+    @PostMapping
     public String updateProfile(@ModelAttribute Mentor mentor, Authentication authentication, RedirectAttributes redirectAttributes) {
         String email = authentication.getName();
         mentorService.updateProfile(email, mentor);
         redirectAttributes.addFlashAttribute("successMessage", "Perfil atualizado com sucesso!");
-        return "redirect:/mentores/perfil";
+        return "redirect:/mentor/perfil";
     }
 }
