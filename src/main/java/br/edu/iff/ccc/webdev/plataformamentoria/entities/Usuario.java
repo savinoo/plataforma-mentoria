@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // Estratégia de herança
@@ -35,6 +37,17 @@ public abstract class Usuario implements Serializable {
     @CollectionTable(name = "usuario_papeis", joinColumns = @JoinColumn(name = "usuario_id"))
     @Column(name = "papel")
     private Set<String> papeis = new HashSet<>();
+
+    @Column(name = "tentativas_falhas", columnDefinition = "int default 0")
+    private int tentativasFalhas = 0;
+
+    private LocalDateTime tempoBloqueio;
+
+    // Getters e Setters para os novos campos
+    public int getTentativasFalhas() { return tentativasFalhas; }
+    public void setTentativasFalhas(int tentativasFalhas) { this.tentativasFalhas = tentativasFalhas; }
+    public LocalDateTime getTempoBloqueio() { return tempoBloqueio; }
+    public void setTempoBloqueio(LocalDateTime tempoBloqueio) { this.tempoBloqueio = tempoBloqueio; }
 
     // Getters e Setters
     public Long getId() { return id; }

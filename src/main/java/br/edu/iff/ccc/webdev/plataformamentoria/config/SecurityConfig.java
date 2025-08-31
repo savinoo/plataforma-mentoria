@@ -9,10 +9,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,10 +43,12 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/auth/login")
-                .loginProcessingUrl("/login") // Define explicitamente a URL de processamento
-                .defaultSuccessUrl("/home", true)
+                .loginProcessingUrl("/login")
+                .successHandler(customAuthenticationSuccessHandler) // Utiliza o novo gestor
+                .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
+            
             .logout(logout -> logout
                 .logoutUrl("/logout") // CORRIGIDO: URL de logout para corresponder ao template
                 .logoutSuccessUrl("/auth/login?logout")
