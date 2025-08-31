@@ -63,6 +63,7 @@
                                                    'bg-red-100 text-red-800'}"
                                   class="rounded-full px-2 py-1 text-xs font-medium">
                             </span>
+                            <p th:if="${pedido.status.name() == 'RECUSADO'}" class="text-xs text-gray-500 mt-1" th:text="'Motivo: ' + ${pedido.motivoRecusa}"></p>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(pedidosEnviados)}">

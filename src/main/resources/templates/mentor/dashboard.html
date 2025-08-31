@@ -23,25 +23,46 @@
                 <p>Não existem pedidos de mentoria pendentes no momento.</p>
             </div>
             
-            <div th:each="pedido : ${pedidosPendentes}" class="rounded-lg bg-white p-6 shadow-md">
+            <div th:each="pedido : ${pedidosPendentes}" x-data="{ modalOpen: false }" @keydown.escape.window="modalOpen = false" class="rounded-lg bg-white p-6 shadow-md">
                 <div class="flex flex-col md:flex-row justify-between">
                     <div>
-                        <p class="text-sm text-gray-500" th:text="'Pedido de ' + ${pedido.mentorado.nome}"></p>
+                        <p class.text-sm text-gray-500>Pedido de <strong th:text="${pedido.mentorado.nome}"></strong></p>
                         <p class="mt-2 text-gray-700 italic">"<span th:text="${pedido.mensagem}"></span>"</p>
                         <a href="#" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Ver Perfil do Mentorado (em breve)</a>
                     </div>
                     <div class="flex items-center space-x-2 mt-4 md:mt-0">
-                        <form th:action="@{/mentores/pedidos/{id}/recusar(id=${pedido.id})}" method="post">
-                            <button type="submit" class="rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 hover:bg-gray-300">Recusar</button>
-                        </form>
+                        <button @click="modalOpen = true" type="button" class="rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 hover:bg-gray-300">Recusar</button>
+                        
                         <form th:action="@{/mentores/pedidos/{id}/aceitar(id=${pedido.id})}" method="post">
                             <button type="submit" class="rounded-lg bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700">Aceitar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div x-show="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;">
+                    <div @click.away="modalOpen = false" class="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg">
+                        <h2 class="text-2xl font-bold mb-4">Recusar Pedido</h2>
+                        <p class="mb-4">Por favor, selecione um motivo para a recusa. A mensagem será enviada anonimamente ao mentorado.</p>
+                        
+                        <form th:action="@{/mentores/pedidos/{id}/recusar(id=${pedido.id})}" method="post">
+                            <select name="motivo" class="form-select w-full rounded-md border-gray-300" required>
+                                <option value="Falta de tempo no momento">Falta de tempo no momento</option>
+                                <option value="A sua área não é a minha especialidade">A sua área não é a minha especialidade</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                            
+                            <div class="mt-6 flex justify-end space-x-4">
+                                <button type="button" @click="modalOpen = false" class="rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 hover:bg-gray-300">Cancelar</button>
+                                <button type="submit" class="rounded-lg bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700">Confirmar Recusa</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </main>
 </body>
 </html>

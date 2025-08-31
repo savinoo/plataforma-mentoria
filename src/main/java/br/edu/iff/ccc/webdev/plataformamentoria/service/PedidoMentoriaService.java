@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +17,9 @@ public class PedidoMentoriaService {
     @Autowired
     private PedidoMentoriaRepository pedidoMentoriaRepository;
 
+    // ... (criarPedido, findPedidosPendentesByMentor, aceitarPedido permanecem iguais) ...
     @Transactional
     public PedidoMentoria criarPedido(Mentorado mentorado, Mentor mentor, String mensagem, boolean deRecomendacao) {
-        // Verifica se já existe um pedido pendente
         if (pedidoMentoriaRepository.existsByMentoradoAndMentorAndStatus(mentorado, mentor, PedidoMentoriaStatus.PENDENTE)) {
             throw new IllegalStateException("Já existe um pedido pendente para este mentor.");
         }
@@ -47,11 +48,12 @@ public class PedidoMentoriaService {
     }
 
     @Transactional
-    public void recusarPedido(Long pedidoId) {
+    public void recusarPedido(Long pedidoId, String motivo) { // Assinatura atualizada
         PedidoMentoria pedido = pedidoMentoriaRepository.findById(pedidoId)
             .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
         pedido.setStatus(PedidoMentoriaStatus.RECUSADO);
         pedido.setDataResposta(LocalDateTime.now());
+        pedido.setMotivoRecusa(motivo); // Define o motivo
         pedidoMentoriaRepository.save(pedido);
     }
     
