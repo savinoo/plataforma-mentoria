@@ -5,9 +5,11 @@ import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +22,13 @@ public class MentorService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
+    // ... (métodos saveMentor, findAprovados, etc. permanecem os mesmos) ...
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();
-        // MELHORIA: Concatena nome e sobrenome para salvar o nome completo.
         mentor.setNome(mentorDTO.getNome() + " " + mentorDTO.getSobrenome());
         mentor.setEmail(mentorDTO.getEmail());
-        // MELHORIA: A senha agora é codificada na camada de serviço.
         mentor.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentor.setEspecialidade(mentorDTO.getEspecialidade());
         mentor.addPapel("MENTOR");
@@ -67,5 +68,30 @@ public class MentorService {
         }
         
         mentorRepository.save(mentor);
+    }
+    
+    public List<Mentor> searchMentores(String termo, String especialidade, String status, String sort) {
+        // Converte strings vazias em null para que a consulta JPQL funcione corretamente
+        String termoBusca = StringUtils.hasText(termo) ? termo : null;
+        String especialidadeFiltro = StringUtils.hasText(especialidade) ? especialidade : null;
+        String statusFiltro = StringUtils.hasText(status) ? status : null;
+
+        Sort.Direction direction = Sort.Direction.ASC;
+        String sortProperty = "nome"; // Relevância por defeito ordena por nome
+
+        // Lógica para os outros tipos de ordenação (a ser implementada no futuro)
+        if ("avaliacao".equals(sort)) {
+            // sortProperty = "avaliacaoMedia"; // Exemplo para o futuro
+            // direction = Sort.Direction.DESC;
+        } else if ("recente".equals(sort)) {
+            // sortProperty = "ultimaAtividade"; // Exemplo para o futuro
+            // direction = Sort.Direction.DESC;
+        }
+
+        return mentorRepository.findWithFilters(termoBusca, especialidadeFiltro, statusFiltro, Sort.by(direction, sortProperty));
+    }
+
+    public List<String> getEspecialidades() {
+        return mentorRepository.findDistinctEspecialidades();
     }
 }

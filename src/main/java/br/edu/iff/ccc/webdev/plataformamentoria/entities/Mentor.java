@@ -17,11 +17,9 @@ public class Mentor extends Usuario {
 
     private boolean aprovado = false;
 
-    @Lob
     @Column(length = 1500)
     private String resumoProfissional;
 
-    @Lob
     @Column(length = 1500)
     private String filosofiaMentoria;
 

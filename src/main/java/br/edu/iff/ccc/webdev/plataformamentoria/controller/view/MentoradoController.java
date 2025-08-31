@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -25,19 +27,35 @@ public class MentoradoController {
 
     @GetMapping("/dashboard")
     public String showMentoradoDashboard(Model model) {
-        return "mentorado/dashboard"; 
+        return "mentorado/dashboard";
     }
 
     @GetMapping("/busca")
-    public String searchMentores(Model model) {
-        // CORREÇÃO: Busca apenas mentores aprovados para listar
-        model.addAttribute("mentores", mentorService.findAprovados());
+    public String searchMentores(
+            @RequestParam(value = "termo", required = false) String termo,
+            @RequestParam(value = "especialidade", required = false) String especialidade,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "sort", required = false, defaultValue = "relevancia") String sort,
+            Model model) {
+        
+        List<Mentor> mentoresEncontrados = mentorService.searchMentores(termo, especialidade, status, sort);
+        List<String> todasEspecialidades = mentorService.getEspecialidades();
+
+        model.addAttribute("mentores", mentoresEncontrados);
+        model.addAttribute("especialidades", todasEspecialidades);
+        
+        // Devolve os valores dos filtros para a view
+        model.addAttribute("termo", termo);
+        model.addAttribute("especialidadeSelecionada", especialidade);
+        model.addAttribute("statusSelecionado", status);
+        model.addAttribute("sortSelecionado", sort);
+        
         return "mentorado/busca_mentores";
     }
-    
+
+    // ... (restante dos métodos do controller) ...
     @GetMapping("/mentores/{id}")
     public String showMentorProfile(@PathVariable("id") Long id, Model model) {
-        // CORREÇÃO: Busca o mentor pelo ID e o adiciona ao modelo
         Mentor mentor = mentorService.findMentorById(id)
             .orElseThrow(() -> new IllegalArgumentException("ID de Mentor inválido:" + id));
         model.addAttribute("mentor", mentor);
