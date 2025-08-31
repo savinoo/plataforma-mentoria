@@ -12,7 +12,7 @@ import jakarta.persistence.CascadeType;
 @Entity
 public class Mentorado extends Usuario {
 
-    @NotBlank(message = "O campo de interesses não pode ser vazio.")
+    // A anotação @NotBlank foi removida para permitir que o campo seja preenchido posteriormente.
     private String interesses; // Ex: "Desenvolvimento Web, Carreira, Spring Boot"
 
     // Construtor padrão

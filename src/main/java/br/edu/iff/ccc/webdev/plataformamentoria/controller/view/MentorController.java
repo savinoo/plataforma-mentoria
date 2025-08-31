@@ -54,6 +54,6 @@ public class MentorController {
         
         // A lógica no service já deve cuidar de setar `aprovado = false`
         redirectAttributes.addFlashAttribute("successMessage", "Sua aplicação foi enviada e será revisada por um administrador.");
-        return "redirect:/home"; // Redirecionar para home após aplicação
+        return "redirect:/auth/login"; // Redireciona para o login com a mensagem de sucesso
     }
 }

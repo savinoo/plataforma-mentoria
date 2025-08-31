@@ -34,4 +34,13 @@ public class MentoradoController {
         // Lógica para processar a solicitação de mentoria
         return "redirect:/mentorados/dashboard?success";
     }
+
+    // Novo método para a página de onboarding
+    @GetMapping("/onboarding")
+    public String showOnboardingPage(Model model) {
+        // Aqui, você pode buscar o mentorado logado e adicioná-lo ao modelo
+        // para preencher um formulário de edição de perfil.
+        // model.addAttribute("mentorado", ...);
+        return "mentorado/onboarding"; // -> templates/mentorado/onboarding.html
+    }
 }
