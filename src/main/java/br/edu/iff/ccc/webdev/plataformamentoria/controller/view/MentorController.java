@@ -29,21 +29,12 @@ public class MentorController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    // Opções pré-definidas para as áreas de especialização
     private final List<String> areasList = List.of(
-        "Transição de Carreira", 
-        "Preparação para Entrevistas", 
-        "Investigação Académica",
-        "Desenvolvimento de Software",
-        "Gestão de Produtos",
-        "Empreendedorismo"
+        "Transição de Carreira", "Preparação para Entrevistas", "Investigação Académica",
+        "Desenvolvimento de Software", "Gestão de Produtos", "Empreendedorismo"
     );
 
-    @GetMapping
-    public String showMentoresPage(Model model) {
-        model.addAttribute("mentores", mentorService.findAprovados());
-        return "mentor/mentores";
-    }
+    private final List<String> formatosList = List.of("Online", "Presencial", "Ambos");
 
     @GetMapping("/new")
     public String showNewMentorForm(Model model) {
@@ -71,13 +62,11 @@ public class MentorController {
         return "redirect:/auth/login";
     }
 
-    // MÉTODO ADICIONADO PARA RESOLVER O ERRO 404
     @GetMapping("/dashboard")
     public String showMentorDashboard() {
         return "mentor/dashboard";
     }
 
-    // MÉTODOS MOVIDOS E AJUSTADOS PARA PERFIL
     @GetMapping("/perfil")
     public String showProfileForm(Model model, Authentication authentication) {
         String email = authentication.getName();
@@ -86,6 +75,7 @@ public class MentorController {
         
         model.addAttribute("mentor", mentor);
         model.addAttribute("areasList", areasList);
+        model.addAttribute("formatosList", formatosList); // Adicionado para os radio buttons
         return "mentor/perfil_form";
     }
 

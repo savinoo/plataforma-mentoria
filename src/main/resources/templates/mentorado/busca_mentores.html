@@ -4,6 +4,7 @@
 <body>
     <main>
         <h1 class="text-2xl font-bold mb-4">Encontre seu Mentor</h1>
+        <p class="mb-6 text-gray-600">Apenas mentores aprovados pela administração são exibidos aqui.</p>
 
         <div class="overflow-hidden rounded-lg bg-white shadow">
             <table class="min-w-full divide-y divide-gray-200">
@@ -11,6 +12,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Nome</th>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Área de Especialidade</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
                         <th class="relative px-6 py-3"></th>
                     </tr>
                 </thead>
@@ -20,7 +22,10 @@
                             <span th:text="${mentor.nome}">Nome do Mentor</span>
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
-                            <span th:text="${mentor.areaEspecialidade}">Engenharia de Software</span>
+                            <span th:text="${mentor.especialidade}">Engenharia de Software</span>
+                        </td>
+                        <td class="whitespace-nowrap px-6 py-4">
+                            <span class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800" th:text="${mentor.statusDisponibilidade}">Disponível</span>
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                             <a th:href="@{/mentorados/mentores/{id}(id=${mentor.id})}" class="text-blue-600 hover:text-blue-900">Ver Perfil</a>

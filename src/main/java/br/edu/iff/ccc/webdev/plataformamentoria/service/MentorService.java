@@ -5,6 +5,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +17,21 @@ public class MentorService {
 
     @Autowired
     private MentorRepository mentorRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();
         mentor.setNome(mentorDTO.getNome());
         mentor.setEmail(mentorDTO.getEmail());
-        mentor.setSenha(mentorDTO.getSenha());
+        mentor.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentor.setEspecialidade(mentorDTO.getEspecialidade());
         mentor.addPapel("MENTOR");
-        mentor.setAprovado(false); // Garantir que a aprovação comece como falsa
+        mentor.setAprovado(false);
+        // CORREÇÃO: Define explicitamente o status na criação
+        mentor.setStatusDisponibilidade("Disponível");
         return mentorRepository.save(mentor);
     }
     
@@ -50,6 +56,15 @@ public class MentorService {
         mentor.setFilosofiaMentoria(profileData.getFilosofiaMentoria());
         mentor.setCompetencias(profileData.getCompetencias());
         mentor.setAreasDeEspecializacao(profileData.getAreasDeEspecializacao());
+        
+        mentor.setDisponibilidadeMensal(profileData.getDisponibilidadeMensal());
+        mentor.setFormatosReuniao(profileData.getFormatosReuniao());
+        mentor.setMaxMentorados(profileData.getMaxMentorados());
+
+        // CORREÇÃO: Garante que o status não seja nulo, corrigindo registos antigos
+        if (mentor.getStatusDisponibilidade() == null) {
+            mentor.setStatusDisponibilidade("Disponível");
+        }
         
         mentorRepository.save(mentor);
     }

@@ -11,33 +11,43 @@ import jakarta.persistence.Column;
 @Entity
 public class Mentorado extends Usuario {
 
-    // Informações Acadêmicas e de Carreira
+    // CAMPO LEGADO PARA COMPATIBILIDADE COM A BASE DE DADOS ATUAL
+    @Column(nullable = false)
+    private String interesses = "N/D";
+
+    // Mapeamento explícito para garantir a correspondência com a BD
+    @Column(name = "areasDeInteresse")
     private String areasDeInteresse; 
+    @Column(name = "disciplinasDeMaiorDificuldade")
     private String disciplinasDeMaiorDificuldade;
+    @Column(name = "conquistasAcademicas")
     private String conquistasAcademicas;
+    @Column(name = "industriasDeInteresse")
     private String industriasDeInteresse;
+    @Column(name = "caminhosDeCarreira")
     private String caminhosDeCarreira;
+    @Column(name = "empresasDeInteresse")
     private String empresasDeInteresse;
+    @Column(name = "competenciasDesejadas")
     private String competenciasDesejadas;
+    @Column(name = "objetivosMentoria")
     private String objetivosMentoria;
 
     @Column(columnDefinition = "boolean default false")
     private boolean onboardingCompleto = false;
 
-    // Campos de Controle de Privacidade
     @Column(columnDefinition = "boolean default false")
     private boolean visibilidadeInfoAcademica = false;
-
     @Column(columnDefinition = "boolean default false")
     private boolean visibilidadeAspiracoesCarreira = false;
-
     @Column(columnDefinition = "boolean default false")
     private boolean visibilidadeCompetencias = false;
 
-    // Construtor padrão
     public Mentorado() {}
 
-    // Getters e Setters para os campos de perfil...
+    // Getters e Setters
+    public String getInteresses() { return interesses; }
+    public void setInteresses(String interesses) { this.interesses = interesses; }
     public String getAreasDeInteresse() { return areasDeInteresse; }
     public void setAreasDeInteresse(String areasDeInteresse) { this.areasDeInteresse = areasDeInteresse; }
     public String getDisciplinasDeMaiorDificuldade() { return disciplinasDeMaiorDificuldade; }
@@ -56,8 +66,6 @@ public class Mentorado extends Usuario {
     public void setObjetivosMentoria(String objetivosMentoria) { this.objetivosMentoria = objetivosMentoria; }
     public boolean isOnboardingCompleto() { return onboardingCompleto; }
     public void setOnboardingCompleto(boolean onboardingCompleto) { this.onboardingCompleto = onboardingCompleto; }
-
-    // Getters e Setters para os campos de privacidade
     public boolean isVisibilidadeInfoAcademica() { return visibilidadeInfoAcademica; }
     public void setVisibilidadeInfoAcademica(boolean visibilidadeInfoAcademica) { this.visibilidadeInfoAcademica = visibilidadeInfoAcademica; }
     public boolean isVisibilidadeAspiracoesCarreira() { return visibilidadeAspiracoesCarreira; }

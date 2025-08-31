@@ -15,7 +15,7 @@ public class Mentor extends Usuario {
     @NotBlank(message = "A especialidade não pode ser vazia.")
     private String especialidade;
 
-    private boolean aprovado = false; // Por padrão, um novo mentor não está aprovado
+    private boolean aprovado = false;
 
     @Lob
     @Column(length = 1500)
@@ -26,14 +26,21 @@ public class Mentor extends Usuario {
     private String filosofiaMentoria;
 
     @Column(length = 500)
-    private String competencias; // Armazenará tags separadas por vírgula
+    private String competencias;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "mentor_areas_especializacao", joinColumns = @JoinColumn(name = "mentor_id"))
     @Column(name = "area_especializacao")
     private Set<String> areasDeEspecializacao = new HashSet<>();
+
+    private String disponibilidadeMensal;
+    private String formatosReuniao;
+    private Integer maxMentorados;
     
-    // Construtor padrão
+    // CORREÇÃO: Garante o valor padrão também na base de dados
+    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'Disponível'")
+    private String statusDisponibilidade = "Disponível";
+    
     public Mentor() {}
 
     // Getters e Setters
@@ -49,6 +56,14 @@ public class Mentor extends Usuario {
     public void setCompetencias(String competencias) { this.competencias = competencias; }
     public Set<String> getAreasDeEspecializacao() { return areasDeEspecializacao; }
     public void setAreasDeEspecializacao(Set<String> areasDeEspecializacao) { this.areasDeEspecializacao = areasDeEspecializacao; }
+    public String getDisponibilidadeMensal() { return disponibilidadeMensal; }
+    public void setDisponibilidadeMensal(String disponibilidadeMensal) { this.disponibilidadeMensal = disponibilidadeMensal; }
+    public String getFormatosReuniao() { return formatosReuniao; }
+    public void setFormatosReuniao(String formatosReuniao) { this.formatosReuniao = formatosReuniao; }
+    public Integer getMaxMentorados() { return maxMentorados; }
+    public void setMaxMentorados(Integer maxMentorados) { this.maxMentorados = maxMentorados; }
+    public String getStatusDisponibilidade() { return statusDisponibilidade; }
+    public void setStatusDisponibilidade(String statusDisponibilidade) { this.statusDisponibilidade = statusDisponibilidade; }
 
     @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mentoria> mentorias = new ArrayList<>();

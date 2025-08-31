@@ -1,7 +1,8 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
+import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
-import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentoradoRepository;
+import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,31 +20,35 @@ public class MentoradoController {
     @Autowired
     private MentoradoService mentoradoService;
 
+    @Autowired
+    private MentorService mentorService; // Service do Mentor injetado
+
     @GetMapping("/dashboard")
     public String showMentoradoDashboard(Model model) {
-        // Lógica para buscar as mentorias agendadas do mentorado
-        return "mentorado/dashboard"; // -> templates/mentorado/dashboard.html
+        return "mentorado/dashboard"; 
     }
 
     @GetMapping("/busca")
     public String searchMentores(Model model) {
-        // Lógica para buscar e listar todos os mentores
-        return "mentorado/busca_mentores"; // -> templates/mentorado/busca_mentores.html
+        // CORREÇÃO: Busca apenas mentores aprovados para listar
+        model.addAttribute("mentores", mentorService.findAprovados());
+        return "mentorado/busca_mentores";
     }
     
     @GetMapping("/mentores/{id}")
     public String showMentorProfile(@PathVariable("id") Long id, Model model) {
-        // Lógica para buscar um mentor pelo ID e exibi-lo
-        return "mentor/perfil_publico"; // -> templates/mentor/perfil_publico.html
+        // CORREÇÃO: Busca o mentor pelo ID e o adiciona ao modelo
+        Mentor mentor = mentorService.findMentorById(id)
+            .orElseThrow(() -> new IllegalArgumentException("ID de Mentor inválido:" + id));
+        model.addAttribute("mentor", mentor);
+        return "mentor/perfil_publico";
     }
 
     @PostMapping("/solicitar")
     public String requestMentoria() {
-        // Lógica para processar a solicitação de mentoria
         return "redirect:/mentorados/dashboard?success";
     }
 
-    // Novo método para a página de onboarding
     @GetMapping("/onboarding")
     public String showOnboardingPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,10 +58,9 @@ public class MentoradoController {
         if (mentoradoOpt.isPresent()) {
             model.addAttribute("mentorado", mentoradoOpt.get());
         } else {
-            // Lida com o caso de não encontrar o mentorado, talvez redirecionando para o erro
             return "redirect:/error";
         }
-        return "mentorado/onboarding"; // -> templates/mentorado/onboarding.html
+        return "mentorado/onboarding";
     }
 
     @PostMapping("/onboarding")

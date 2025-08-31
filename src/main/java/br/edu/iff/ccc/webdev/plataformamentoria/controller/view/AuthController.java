@@ -42,12 +42,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Repositório para verificar e-mails
-
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "auth/login";
-    }
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
@@ -59,7 +54,6 @@ public class AuthController {
     public String processRegistration(@Valid @ModelAttribute("usuarioDTO") UsuarioFormDTO usuarioDTO,
                                       BindingResult result,
                                       RedirectAttributes redirectAttributes) {
-        // Verifica se o e-mail já está em uso
         if (usuarioRepository.findByEmail(usuarioDTO.getEmail()).isPresent()) {
             result.addError(new FieldError("usuarioDTO", "email", "Este e-mail já está registado."));
         }
@@ -68,18 +62,26 @@ public class AuthController {
             return "auth/register";
         }
 
-        // O registo padrão cria um MENTORADO
         Mentorado novoMentorado = new Mentorado();
         novoMentorado.setNome(usuarioDTO.getNome());
         novoMentorado.setEmail(usuarioDTO.getEmail());
         novoMentorado.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         novoMentorado.addPapel("MENTORADO");
-        novoMentorado.setAreasDeInteresse("Ainda não definido"); // Valor padrão mais claro
+        
+        // CORREÇÃO: Define valores padrão para os campos, incluindo o legado.
+        novoMentorado.setInteresses("Ainda não definido");
+        novoMentorado.setAreasDeInteresse("Ainda não definido");
 
         mentoradoService.saveMentorado(novoMentorado);
 
         redirectAttributes.addFlashAttribute("successMessage", "Cadastro realizado com sucesso! Faça o login.");
         return "redirect:/auth/login";
+    }
+    
+    // ... restantes métodos do controller ...
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "auth/login";
     }
 
     @GetMapping("/forgot-password")
@@ -94,14 +96,12 @@ public class AuthController {
             Usuario usuario = optionalUsuario.get();
             String token = UUID.randomUUID().toString();
             usuario.setResetPasswordToken(token);
-            usuario.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1)); // Token expira em 1 hora
+            usuario.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
             usuarioRepository.save(usuario);
 
-            // Simulação de envio de e-mail: registo do link no log
             String resetLink = "http://localhost:8080/auth/reset-password?token=" + token;
             logger.info("Link de Redefinição de Senha para " + email + ": " + resetLink);
         }
-        // Mostra a mesma página de sucesso, existindo o e-mail ou não, para não revelar informações
         return "auth/forgot_password_success";
     }
 

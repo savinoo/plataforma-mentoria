@@ -3,17 +3,45 @@
 
 <body>
     <main>
-        <div class="rounded-lg bg-white p-6 shadow-md">
-            <h1 class="text-2xl font-bold mb-2" th:text="${mentor.nome}">Nome do Mentor</h1>
-            <p class="text-lg text-gray-600 mb-4" th:text="${mentor.especialidade}">Especialidade</p>
+        <div class="rounded-lg bg-white p-6 shadow-md space-y-6">
             
-            <div class="border-t pt-4">
-                <h2 class="font-semibold">Sobre:</h2>
-                <p>Este é um mentor dedicado com vasta experiência em <span th:text="${mentor.especialidade}"></span>.</p>
+            <div class="flex flex-col sm:flex-row items-start justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold" th:text="${mentor.nome}">Nome do Mentor</h1>
+                    <p class="text-xl text-gray-600 mt-1" th:text="${mentor.especialidade}">Especialidade Principal</p>
+                </div>
+                <div th:if="${mentor.aprovado}" 
+                     class="mt-4 sm:mt-0 flex-shrink-0 flex items-center space-x-2 rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Verificado pela Instituição</span>
+                </div>
             </div>
             
-            <div class="mt-6">
-                 <button class="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700">
+            <div class="border-t pt-4 space-y-4">
+                <div th:if="${mentor.resumoProfissional}">
+                    <h2 class="font-semibold text-lg">Resumo Profissional</h2>
+                    <p class="text-gray-700" th:text="${mentor.resumoProfissional}"></p>
+                </div>
+                <div th:if="${mentor.filosofiaMentoria}">
+                    <h2 class="font-semibold text-lg">Filosofia de Mentoria</h2>
+                    <p class="text-gray-700" th:text="${mentor.filosofiaMentoria}"></p>
+                </div>
+                <div th:if="${mentor.competencias}">
+                    <h2 class="font-semibold text-lg">Competências Principais</h2>
+                    <p class="text-gray-700" th:text="${mentor.competencias}"></p>
+                </div>
+                <div th:if="${not #sets.isEmpty(mentor.areasDeEspecializacao)}">
+                    <h2 class="font-semibold text-lg">Áreas de Especialização</h2>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span th:each="area : ${mentor.areasDeEspecializacao}"
+                              class="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800"
+                              th:text="${area}"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t pt-6">
+                 <button class="rounded-lg bg-blue-600 px-5 py-2.5 font-bold text-white hover:bg-blue-700">
                     Solicitar Mentoria
                 </button>
             </div>
