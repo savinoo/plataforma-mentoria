@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Mentor extends Usuario {
 
+    // ... (campos existentes) ...
     @NotBlank(message = "A especialidade não pode ser vazia.")
     private String especialidade;
 
@@ -35,13 +35,20 @@ public class Mentor extends Usuario {
     private String formatosReuniao;
     private Integer maxMentorados;
     
-    // CORREÇÃO: Garante o valor padrão também na base de dados
     @Column(columnDefinition = "VARCHAR(255) DEFAULT 'Disponível'")
     private String statusDisponibilidade = "Disponível";
     
+    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Mentoria> mentorias = new ArrayList<>();
+
+    // NOVA RELAÇÃO MANY-TO-MANY
+    @ManyToMany(mappedBy = "mentores")
+    private Set<Mentorado> mentorados = new HashSet<>();
+
     public Mentor() {}
 
     // Getters e Setters
+    // ... (getters e setters existentes) ...
     public String getEspecialidade() { return especialidade; }
     public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
     public boolean isAprovado() { return aprovado; }
@@ -62,10 +69,8 @@ public class Mentor extends Usuario {
     public void setMaxMentorados(Integer maxMentorados) { this.maxMentorados = maxMentorados; }
     public String getStatusDisponibilidade() { return statusDisponibilidade; }
     public void setStatusDisponibilidade(String statusDisponibilidade) { this.statusDisponibilidade = statusDisponibilidade; }
-
-    @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Mentoria> mentorias = new ArrayList<>();
-
     public List<Mentoria> getMentorias() { return mentorias; }
     public void setMentorias(List<Mentoria> mentorias) { this.mentorias = mentorias; }
+    public Set<Mentorado> getMentorados() { return mentorados; } // NOVO GETTER
+    public void setMentorados(Set<Mentorado> mentorados) { this.mentorados = mentorados; } // NOVO SETTER
 }
