@@ -10,7 +10,7 @@ public class MentorFormDTO {
     @NotBlank(message = "O nome não pode ser vazio.")
     private String nome;
 
-    @NotBlank(message = "O sobrenome не pode ser vazio.")
+    @NotBlank(message = "O sobrenome não pode ser vazio.")
     private String sobrenome;
 
     @NotBlank(message = "O email não pode ser vazio.")
@@ -26,7 +26,7 @@ public class MentorFormDTO {
     @NotBlank(message = "A confirmação de senha não pode ser vazia.")
     private String confirmacaoSenha;
 
-    @NotBlank(message = "A especialidade не pode ser vazia.")
+    @NotBlank(message = "A especialidade não pode ser vazia.")
     private String especialidade;
 
     // Getters e Setters

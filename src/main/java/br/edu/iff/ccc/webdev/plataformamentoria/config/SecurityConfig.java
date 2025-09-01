@@ -19,8 +19,6 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    // A injeção do FailureHandler foi removida.
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -30,23 +28,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
+                // Rotas públicas para todos os visitantes
                 .requestMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/h2-console/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/mentores", "/mentores/new").permitAll()
+                // Permite que novos mentores se registem
+                .requestMatchers(HttpMethod.GET, "/mentores/new").permitAll()
                 .requestMatchers(HttpMethod.POST, "/mentores").permitAll()
+                // Rotas específicas para cada papel (ROLE)
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/mentores/dashboard", "/mentores/perfil/**").hasRole("MENTOR")
+                .requestMatchers("/mentores/dashboard", "/mentores/perfil/**", "/mentores/pedidos/**").hasRole("MENTOR")
                 .requestMatchers("/mentorados/**").hasRole("MENTORADO")
+                // Todas as outras requisições exigem autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/auth/login")
                 .loginProcessingUrl("/login")
                 .successHandler(customAuthenticationSuccessHandler)
-                // REVERTIDO: Voltamos a usar a failureUrl padrão.
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
-            
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/auth/login?logout")

@@ -14,7 +14,7 @@ public class UsuarioFormDTO {
     @Email(message = "Formato de email inválido.")
     private String email;
 
-    @NotBlank(message = "A senha не pode ser vazia.")
+    @NotBlank(message = "A senha não pode ser vazia.")
     @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres.")
     private String senha;
 

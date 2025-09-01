@@ -14,6 +14,33 @@
         </div>
     </div>
     
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold mb-4">Meus Mentorados</h2>
+        <div class="overflow-hidden rounded-lg bg-white shadow">
+            <div th:if="${#lists.isEmpty(mentoradosAtuais)}" class="p-6 text-center text-gray-500">
+                <p>Ainda não tem mentorados ativos.</p>
+            </div>
+            <table class="min-w-full divide-y divide-gray-200" th:if="${!#lists.isEmpty(mentoradosAtuais)}">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Nome do Mentorado</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Email</th>
+                        <th class="relative px-6 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                    <tr th:each="mentorado : ${mentoradosAtuais}">
+                        <td class="px-6 py-4" th:text="${mentorado.nome}"></td>
+                        <td class="px-6 py-4" th:text="${mentorado.email}"></td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="#" class="text-blue-600 hover:underline">Ver Perfil</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
     <div>
         <h2 class="text-2xl font-bold mb-4">Pedidos de Mentoria Pendentes</h2>
         <div th:if="${successMessage}" class="mb-4 rounded-md bg-green-100 p-3 text-sm text-green-700" th:text="${successMessage}"></div>
@@ -26,7 +53,7 @@
             <div th:each="pedido : ${pedidosPendentes}" x-data="{ modalOpen: false }" @keydown.escape.window="modalOpen = false" class="rounded-lg bg-white p-6 shadow-md">
                 <div class="flex flex-col md:flex-row justify-between">
                     <div>
-                        <p class.text-sm text-gray-500>Pedido de <strong th:text="${pedido.mentorado.nome}"></strong></p>
+                        <p class="text-sm text-gray-500">Pedido de <strong th:text="${pedido.mentorado.nome}"></strong></p>
                         <p class="mt-2 text-gray-700 italic">"<span th:text="${pedido.mensagem}"></span>"</p>
                         <a href="#" class="text-sm text-blue-600 hover:underline mt-2 inline-block">Ver Perfil do Mentorado (em breve)</a>
                     </div>

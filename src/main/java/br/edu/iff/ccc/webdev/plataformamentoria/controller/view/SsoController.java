@@ -2,8 +2,9 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
+import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository; // Importar o repositório
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier; // Importar Qualifier
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,41 +27,43 @@ public class SsoController {
     private MentoradoService mentoradoService;
 
     @Autowired
+    private UsuarioRepository usuarioRepository; // Adicionar o repositório de usuário
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Qualifier("usuarioService") // Especifica qual bean injetar
+    @Qualifier("usuarioService")
     private UserDetailsService userDetailsService;
 
-    // Etapa 1: Redireciona para a página de login simulada do SSO.
     @GetMapping("/login")
     public String redirectToSso() {
-        // Na vida real, isto redirecionaria para o provedor de SSO da instituição.
         return "auth/sso_login_mock";
     }
 
-    // Etapa 2: Processa o "retorno" do SSO.
     @PostMapping("/callback")
     public String handleSsoCallback(@RequestParam String nome, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        // Simula a criação de um usuário com dados verificados do SSO.
-        Mentorado novoMentorado = new Mentorado();
-        novoMentorado.setNome(nome);
-        novoMentorado.setEmail(email);
-        // Gera uma senha aleatória e segura, já que o login será via SSO.
-        novoMentorado.setSenha(passwordEncoder.encode(UUID.randomUUID().toString()));
-        novoMentorado.addPapel("MENTORADO");
-        novoMentorado.setAreasDeInteresse("Ainda não definido"); // Valor padrão
+        
+        // Lógica CORRIGIDA: Verifica se o utilizador já existe
+        if (usuarioRepository.findByEmail(email).isEmpty()) {
+            // Se não existe, cria um novo mentorado
+            Mentorado novoMentorado = new Mentorado();
+            novoMentorado.setNome(nome);
+            novoMentorado.setEmail(email);
+            novoMentorado.setSenha(passwordEncoder.encode(UUID.randomUUID().toString()));
+            novoMentorado.addPapel("MENTORADO");
+            novoMentorado.setAreasDeInteresse("Ainda não definido");
 
-        mentoradoService.saveMentorado(novoMentorado);
+            mentoradoService.saveMentorado(novoMentorado);
+            redirectAttributes.addFlashAttribute("successMessage", "Registo via SSO bem-sucedido! Complete o seu perfil.");
+        }
 
-        // Autentica o usuário automaticamente na plataforma após o registo via SSO.
+        // Autentica o utilizador (seja ele novo ou já existente)
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Autenticação SSO bem-sucedida! Complete o seu perfil.");
-
-        // Etapa 3: Redireciona para o onboarding.
-        return "redirect:/mentorados/onboarding";
+        // O CustomAuthenticationSuccessHandler fará o redirecionamento correto
+        return "redirect:/home";
     }
 }

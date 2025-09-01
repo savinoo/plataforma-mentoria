@@ -1,6 +1,5 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
-import br.edu.iff.ccc.webdev.plataformamentoria.entities.Usuario;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

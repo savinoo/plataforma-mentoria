@@ -1,5 +1,6 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
+import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.PedidoMentoria;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
@@ -13,14 +14,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/mentores")
 public class MentorController {
-    // ... (propriedades e outros métodos) ...
+
     @Autowired
     private MentorService mentorService;
 
@@ -65,6 +65,8 @@ public class MentorController {
         mentorService.findByEmail(email).ifPresent(mentor -> {
             List<PedidoMentoria> pedidos = pedidoMentoriaService.findPedidosPendentesByMentor(mentor);
             model.addAttribute("pedidosPendentes", pedidos);
+            // Adiciona a lista de mentorados aceites ao modelo
+            model.addAttribute("mentoradosAtuais", mentor.getMentorados());
         });
         return "mentor/dashboard";
     }
@@ -78,7 +80,7 @@ public class MentorController {
 
     @PostMapping("/pedidos/{id}/recusar")
     public String recusarPedido(@PathVariable("id") Long pedidoId,
-                                @RequestParam("motivo") String motivo, // Recebe o motivo
+                                @RequestParam("motivo") String motivo,
                                 RedirectAttributes redirectAttributes) {
         pedidoMentoriaService.recusarPedido(pedidoId, motivo);
         redirectAttributes.addFlashAttribute("successMessage", "Pedido de mentoria recusado.");

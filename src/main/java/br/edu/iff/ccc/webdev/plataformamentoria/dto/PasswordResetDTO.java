@@ -9,7 +9,7 @@ public class PasswordResetDTO {
     @NotBlank
     private String token;
 
-    @NotBlank(message = "A nova senha не pode ser vazia.")
+    @NotBlank(message = "A nova senha não pode ser vazia.")
     @Size(min = 12, message = "A senha deve ter no mínimo 12 caracteres.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).*$",
              message = "A senha deve conter ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
