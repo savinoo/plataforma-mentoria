@@ -30,10 +30,10 @@
     </div>
 
     <div th:if="${mentorado.isOnboardingCompleto()}" class="mb-6">
-        <h2 class="text-2xl font-bold mb-4">Recomendado para Si</h2>
+        <h2 class="text-2xl font-bold mb-4">Recomendado para Você</h2>
         
         <div th:if="${#lists.isEmpty(recomendacoes)}" class="rounded-lg bg-white p-6 shadow-md text-center text-gray-500">
-            <p>Não encontrámos recomendações automáticas para si no momento. Tente <a th:href="@{/mentorados/busca}" class="text-blue-600 hover:underline">procurar por mentores</a>.</p>
+            <p>Não encontrámos recomendações automáticas para você no momento. Tente <a th:href="@{/mentorados/busca}" class="text-blue-600 hover:underline">procurar por mentores</a>.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
