@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" th:replace="~{base_layout :: base(titulo = 'SSO Simulado', conteudo = ~{::main})}">
+<body>
+    <main>
+        <div class="rounded-lg bg-white p-6 shadow-md">
+            <h1 class="text-2xl font-bold mb-4">SSO Institucional (Simulação)</h1>
+            <p class="mb-6">Esta é uma página de simulação. Numa aplicação real, seria redirecionado para o portal de login da sua instituição.</p>
+
+            <form th:action="@{/auth/sso/callback}" method="post" class="space-y-4">
+                <p>Insira os dados que seriam retornados pelo SSO:</p>
+                <div>
+                    <label for="nome" class="block font-medium">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" class="form-input mt-1 block w-full rounded-md border-gray-300" required value="Aluno Simulado" />
+                </div>
+                <div>
+                    <label for="email" class="block font-medium">Email Institucional:</label>
+                    <input type="email" id="email" name="email" class="form-input mt-1 block w-full rounded-md border-gray-300" required value="aluno.simulado@instituicao.edu" />
+                </div>
+                <div>
+                    <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700">
+                        Autenticar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
