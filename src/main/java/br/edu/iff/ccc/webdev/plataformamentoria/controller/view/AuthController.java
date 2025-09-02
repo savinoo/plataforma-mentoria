@@ -67,8 +67,7 @@ public class AuthController {
         novoMentorado.setEmail(usuarioDTO.getEmail());
         novoMentorado.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         novoMentorado.addPapel("MENTORADO");
-        
-        // CORREÇÃO: Define valores padrão para os campos, incluindo o legado.
+
         novoMentorado.setInteresses("Ainda não definido");
         novoMentorado.setAreasDeInteresse("Ainda não definido");
 
@@ -77,8 +76,7 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Cadastro realizado com sucesso! Faça o login.");
         return "redirect:/auth/login";
     }
-    
-    // ... restantes métodos do controller ...
+  
     @GetMapping("/login")
     public String showLoginPage() {
         return "auth/login";

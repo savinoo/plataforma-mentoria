@@ -1,4 +1,3 @@
-// src/main/java/br/edu/iff/mentorplatform/entities/Usuario.java
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
 import jakarta.persistence.*;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // Estratégia de herança
+@Inheritance(strategy = InheritanceType.JOINED) 
 public abstract class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -49,22 +48,17 @@ public abstract class Usuario implements Serializable {
     @Column(name = "reset_password_token_expiry")
     private LocalDateTime resetPasswordTokenExpiry;
 
-    // NOVO CAMPO ADICIONADO
     @Column(columnDefinition = "boolean default false")
     private boolean banido = false;
 
-
-    // Getters e Setters para os novos campos
     public int getTentativasFalhas() { return tentativasFalhas; }
     public void setTentativasFalhas(int tentativasFalhas) { this.tentativasFalhas = tentativasFalhas; }
     public LocalDateTime getTempoBloqueio() { return tempoBloqueio; }
     public void setTempoBloqueio(LocalDateTime tempoBloqueio) { this.tempoBloqueio = tempoBloqueio; }
 
-    // GETTER E SETTER PARA O NOVO CAMPO
     public boolean isBanido() { return banido; }
     public void setBanido(boolean banido) { this.banido = banido; }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNome() { return nome; }

@@ -67,7 +67,6 @@ public class MentoradoController {
         return "redirect:/mentorados/mentores/" + mentorId;
     }
 
-    // ... (restante dos métodos) ...
     @GetMapping("/busca")
     public String searchMentores(
             @RequestParam(value = "termo", required = false) String termo,

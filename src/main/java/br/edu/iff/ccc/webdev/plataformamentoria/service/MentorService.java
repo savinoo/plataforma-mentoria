@@ -26,7 +26,6 @@ public class MentorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ... (outros métodos do serviço) ...
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();
