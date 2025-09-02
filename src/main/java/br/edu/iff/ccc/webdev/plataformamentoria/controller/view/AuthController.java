@@ -1,4 +1,3 @@
-// savinoo/plataforma-mentoria/plataforma-mentoria-BranchTestes/src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/controller/view/AuthController.java
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.PasswordResetDTO;
@@ -67,8 +66,7 @@ public class AuthController {
         novoMentorado.setEmail(usuarioDTO.getEmail());
         novoMentorado.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         novoMentorado.addPapel("MENTORADO");
-        
-        // CORREÇÃO: Define valores padrão para os campos, incluindo o legado.
+
         novoMentorado.setInteresses("Ainda não definido");
         novoMentorado.setAreasDeInteresse("Ainda não definido");
 
@@ -77,8 +75,7 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Cadastro realizado com sucesso! Faça o login.");
         return "redirect:/auth/login";
     }
-    
-    // ... restantes métodos do controller ...
+
     @GetMapping("/login")
     public String showLoginPage() {
         return "auth/login";
@@ -99,7 +96,7 @@ public class AuthController {
             usuario.setResetPasswordTokenExpiry(LocalDateTime.now().plusHours(1));
             usuarioRepository.save(usuario);
 
-            String resetLink = "http://localhost:8080/auth/reset-password?token=" + token;
+            String resetLink = "http://localhost:8081/auth/reset-password?token=" + token;
             logger.info("Link de Redefinição de Senha para " + email + ": " + resetLink);
         }
         return "auth/forgot_password_success";

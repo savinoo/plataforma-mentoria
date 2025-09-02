@@ -19,12 +19,10 @@ public class HomeController {
 
     @GetMapping("/home")
     public String showHomePage(Authentication authentication) {
-        // Se o utilizador não estiver autenticado, mostra a página inicial pública.
         if (authentication == null || !authentication.isAuthenticated()) {
             return "home";
         }
 
-        // Se estiver autenticado, redireciona para o dashboard correspondente.
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/admin/dashboard";
@@ -33,8 +31,7 @@ public class HomeController {
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MENTORADO"))) {
             return "redirect:/mentorados/dashboard";
         }
-        
-        // Fallback para a página inicial se nenhum papel corresponder.
+
         return "home";
     }
 }

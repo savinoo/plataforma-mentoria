@@ -1,4 +1,4 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/MentorService.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
@@ -26,7 +26,6 @@ public class MentorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ... (outros métodos do serviço) ...
     @Transactional
     public Mentor saveMentor(MentorFormDTO mentorDTO) {
         Mentor mentor = new Mentor();

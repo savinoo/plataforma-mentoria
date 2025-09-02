@@ -1,4 +1,3 @@
-// savinoo/plataforma-mentoria/plataforma-mentoria-BranchTestes/src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/controller/view/AdminController.java
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;

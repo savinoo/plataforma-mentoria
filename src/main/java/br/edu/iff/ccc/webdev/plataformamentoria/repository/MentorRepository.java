@@ -1,4 +1,4 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/repository/MentorRepository.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.repository;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
     List<Mentor> findByAprovadoIsTrue();
-    List<Mentor> findByAprovadoIsFalse(); // Para o admin
+    List<Mentor> findByAprovadoIsFalse();
     Optional<Mentor> findByEmail(String email);
 
     @Query("SELECT m FROM Mentor m WHERE m.aprovado = true AND " +
@@ -31,6 +31,5 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     @Query("SELECT DISTINCT m.especialidade FROM Mentor m WHERE m.aprovado = true ORDER BY m.especialidade")
     List<String> findDistinctEspecialidades();
     
-    // Consulta simplificada para buscar todos os mentores elegíveis para recomendação
     List<Mentor> findByAprovadoIsTrueAndIdNot(Long mentoradoId);
 }

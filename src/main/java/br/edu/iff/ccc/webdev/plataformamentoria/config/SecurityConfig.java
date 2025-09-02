@@ -1,4 +1,4 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/config/SecurityConfig.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.config;
 
 import org.springframework.context.annotation.Bean;
@@ -28,16 +28,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                // Rotas públicas para todos os visitantes
                 .requestMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/h2-console/**").permitAll()
-                // Permite que novos mentores se registem
                 .requestMatchers(HttpMethod.GET, "/mentores/new").permitAll()
                 .requestMatchers(HttpMethod.POST, "/mentores").permitAll()
-                // Rotas específicas para cada papel (ROLE)
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/mentores/dashboard", "/mentores/perfil/**", "/mentores/pedidos/**").hasRole("MENTOR")
                 .requestMatchers("/mentorados/**").hasRole("MENTORADO")
-                // Todas as outras requisições exigem autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

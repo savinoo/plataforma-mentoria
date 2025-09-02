@@ -2,7 +2,7 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.view;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
-import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository; // Importar o repositório
+import br.edu.iff.ccc.webdev.plataformamentoria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +27,7 @@ public class SsoController {
     private MentoradoService mentoradoService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Adicionar o repositório de usuário
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -43,10 +43,8 @@ public class SsoController {
 
     @PostMapping("/callback")
     public String handleSsoCallback(@RequestParam String nome, @RequestParam String email, RedirectAttributes redirectAttributes) {
-        
-        // Lógica CORRIGIDA: Verifica se o utilizador já existe
+
         if (usuarioRepository.findByEmail(email).isEmpty()) {
-            // Se não existe, cria um novo mentorado
             Mentorado novoMentorado = new Mentorado();
             novoMentorado.setNome(nome);
             novoMentorado.setEmail(email);
@@ -58,12 +56,10 @@ public class SsoController {
             redirectAttributes.addFlashAttribute("successMessage", "Registo via SSO bem-sucedido! Complete o seu perfil.");
         }
 
-        // Autentica o utilizador (seja ele novo ou já existente)
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // O CustomAuthenticationSuccessHandler fará o redirecionamento correto
         return "redirect:/home";
     }
 }

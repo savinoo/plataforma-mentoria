@@ -39,7 +39,7 @@ public class MentoradoController {
                 List<RecomendacaoDTO> recomendacoes = mentorService.recomendarMentores(mentorado);
                 model.addAttribute("recomendacoes", recomendacoes);
             }
-            // Adiciona a lista de pedidos enviados ao dashboard
+
             model.addAttribute("pedidosEnviados", pedidoMentoriaService.findPedidosByMentorado(mentorado));
         });
         return "mentorado/dashboard";
@@ -67,7 +67,6 @@ public class MentoradoController {
         return "redirect:/mentorados/mentores/" + mentorId;
     }
 
-    // ... (restante dos métodos) ...
     @GetMapping("/busca")
     public String searchMentores(
             @RequestParam(value = "termo", required = false) String termo,

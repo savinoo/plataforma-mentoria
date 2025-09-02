@@ -14,9 +14,7 @@ public interface PedidoMentoriaRepository extends JpaRepository<PedidoMentoria, 
 
     long countByOriginadoDeRecomendacaoIsTrueAndStatus(PedidoMentoriaStatus status);
     
-    // Novo método para verificar pedido pendente
     boolean existsByMentoradoAndMentorAndStatus(Mentorado mentorado, Mentor mentor, PedidoMentoriaStatus status);
-    
-    // Novo método para buscar os pedidos de um mentorado
+
     List<PedidoMentoria> findByMentorado(Mentorado mentorado, org.springframework.data.domain.Sort sort);
 }

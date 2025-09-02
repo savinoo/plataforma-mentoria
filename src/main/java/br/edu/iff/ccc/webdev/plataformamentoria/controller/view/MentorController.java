@@ -65,7 +65,7 @@ public class MentorController {
         mentorService.findByEmail(email).ifPresent(mentor -> {
             List<PedidoMentoria> pedidos = pedidoMentoriaService.findPedidosPendentesByMentor(mentor);
             model.addAttribute("pedidosPendentes", pedidos);
-            // Adiciona a lista de mentorados aceites ao modelo
+
             model.addAttribute("mentoradosAtuais", mentor.getMentorados());
         });
         return "mentor/dashboard";

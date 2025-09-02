@@ -33,9 +33,9 @@ public class PedidoMentoria implements Serializable {
     private LocalDateTime dataPedido;
     private LocalDateTime dataResposta;
     
-    private String motivoRecusa; // NOVO CAMPO
+    private String motivoRecusa;
 
-    // Getters e Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Mentorado getMentorado() { return mentorado; }
@@ -52,6 +52,6 @@ public class PedidoMentoria implements Serializable {
     public void setDataPedido(LocalDateTime dataPedido) { this.dataPedido = dataPedido; }
     public LocalDateTime getDataResposta() { return dataResposta; }
     public void setDataResposta(LocalDateTime dataResposta) { this.dataResposta = dataResposta; }
-    public String getMotivoRecusa() { return motivoRecusa; } // NOVO GETTER
-    public void setMotivoRecusa(String motivoRecusa) { this.motivoRecusa = motivoRecusa; } // NOVO SETTER
+    public String getMotivoRecusa() { return motivoRecusa; } 
+    public void setMotivoRecusa(String motivoRecusa) { this.motivoRecusa = motivoRecusa; } 
 }

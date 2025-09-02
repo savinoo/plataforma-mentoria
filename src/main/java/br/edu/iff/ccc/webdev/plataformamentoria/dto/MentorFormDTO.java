@@ -29,7 +29,6 @@ public class MentorFormDTO {
     @NotBlank(message = "A especialidade não pode ser vazia.")
     private String especialidade;
 
-    // Getters e Setters
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
     public String getSobrenome() { return sobrenome; }

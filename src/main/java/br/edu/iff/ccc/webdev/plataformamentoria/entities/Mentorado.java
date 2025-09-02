@@ -1,4 +1,4 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/entities/Mentorado.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
 import jakarta.persistence.Entity;
@@ -52,7 +52,7 @@ public class Mentorado extends Usuario {
     @OneToMany(mappedBy = "mentorado", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mentoria> mentorias = new ArrayList<>();
 
-    // NOVA RELAÇÃO MANY-TO-MANY
+ 
     @ManyToMany
     @JoinTable(
         name = "mentoria_relacao",
@@ -63,8 +63,7 @@ public class Mentorado extends Usuario {
 
     public Mentorado() {}
 
-    // Getters e Setters
-    // ... (getters e setters existentes) ...
+ 
     public String getInteresses() { return interesses; }
     public void setInteresses(String interesses) { this.interesses = interesses; }
     public String getAreasDeInteresse() { return areasDeInteresse; }
@@ -93,6 +92,6 @@ public class Mentorado extends Usuario {
     public void setVisibilidadeCompetencias(boolean visibilidadeCompetencias) { this.visibilidadeCompetencias = visibilidadeCompetencias; }
     public List<Mentoria> getMentorias() { return mentorias; }
     public void setMentorias(List<Mentoria> mentorias) { this.mentorias = mentorias; }
-    public Set<Mentor> getMentores() { return mentores; } // NOVO GETTER
-    public void setMentores(Set<Mentor> mentores) { this.mentores = mentores; } // NOVO SETTER
+    public Set<Mentor> getMentores() { return mentores; } 
+    public void setMentores(Set<Mentor> mentores) { this.mentores = mentores; } 
 }

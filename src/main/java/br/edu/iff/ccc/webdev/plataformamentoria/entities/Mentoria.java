@@ -1,4 +1,4 @@
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/entities/Mentoria.java
+
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
 import jakarta.persistence.*;
@@ -23,7 +23,7 @@ public class Mentoria implements Serializable {
     @NotBlank(message = "O tema não pode ser vazio.")
     private String tema;
 
-    // --- Relacionamentos ---
+
     @ManyToOne
     @JoinColumn(name = "mentor_id", nullable = false)
     @NotNull(message = "É necessário selecionar um mentor.")
@@ -34,7 +34,7 @@ public class Mentoria implements Serializable {
     @NotNull(message = "É necessário selecionar um mentorado.")
     private Mentorado mentorado;
 
-    // Getters e Setters
+  
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public LocalDateTime getDataHora() { return dataHora; }

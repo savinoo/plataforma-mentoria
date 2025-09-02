@@ -1,5 +1,3 @@
-// Crie este novo arquivo:
-// src/main/java/br/edu/iff/ccc/webdev/plataformamentoria/service/UsuarioService.java
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Usuario;
@@ -28,7 +26,6 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
 
-        // VERIFICAÇÃO ADICIONADA: Lança exceção se o usuário estiver banido.
         if (usuario.isBanido()) {
             throw new DisabledException("A conta foi banida.");
         }

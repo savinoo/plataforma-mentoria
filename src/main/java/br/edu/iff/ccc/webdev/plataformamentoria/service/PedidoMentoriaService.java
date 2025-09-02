@@ -19,8 +19,6 @@ public class PedidoMentoriaService {
 
     @Autowired
     private PedidoMentoriaRepository pedidoMentoriaRepository;
-
-    // ... (criarPedido e findPedidosPendentesByMentor permanecem iguais) ...
     @Transactional
     public PedidoMentoria criarPedido(Mentorado mentorado, Mentor mentor, String mensagem, boolean deRecomendacao) {
         if (pedidoMentoriaRepository.existsByMentoradoAndMentorAndStatus(mentorado, mentor, PedidoMentoriaStatus.PENDENTE)) {
@@ -50,15 +48,12 @@ public class PedidoMentoriaService {
 
         Mentorado mentorado = pedido.getMentorado();
         Mentor mentor = pedido.getMentor();
-        
-        // Cria a relação
+
         mentorado.getMentores().add(mentor);
 
-        // ATIVAÇÃO DO HUB DE COMUNICAÇÃO (a ser implementado no futuro)
         logger.info("Hub de comunicação ativado entre " + mentorado.getEmail() + " e " + mentor.getEmail());
-        
-        // SIMULAÇÃO DE NOTIFICAÇÃO
-        logger.info("NOTIFICACAO: O seu pedido de mentoria com " + mentor.getNome() + " foi aceite!");
+
+        logger.info("NOTIFICACAO: O seu pedido de mentoria com " + mentor.getNome() + " foi aceito!");
 
         pedidoMentoriaRepository.save(pedido);
     }
@@ -70,8 +65,7 @@ public class PedidoMentoriaService {
         pedido.setStatus(PedidoMentoriaStatus.RECUSADO);
         pedido.setDataResposta(LocalDateTime.now());
         pedido.setMotivoRecusa(motivo);
-        
-        // SIMULAÇÃO DE NOTIFICAÇÃO
+
         logger.info("NOTIFICACAO: O seu pedido de mentoria com " + pedido.getMentor().getNome() + " foi recusado. Motivo: " + motivo);
         
         pedidoMentoriaRepository.save(pedido);

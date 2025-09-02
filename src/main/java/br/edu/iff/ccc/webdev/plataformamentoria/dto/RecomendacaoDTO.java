@@ -12,7 +12,6 @@ public class RecomendacaoDTO {
         this.justificativa = justificativa;
     }
 
-    // Getters e Setters
     public Mentor getMentor() {
         return mentor;
     }
