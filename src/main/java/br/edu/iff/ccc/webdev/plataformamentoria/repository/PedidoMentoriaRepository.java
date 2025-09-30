@@ -17,4 +17,11 @@ public interface PedidoMentoriaRepository extends JpaRepository<PedidoMentoria, 
     boolean existsByMentoradoAndMentorAndStatus(Mentorado mentorado, Mentor mentor, PedidoMentoriaStatus status);
 
     List<PedidoMentoria> findByMentorado(Mentorado mentorado, org.springframework.data.domain.Sort sort);
+    
+    // Novos métodos para completar CRUD
+    List<PedidoMentoria> findByStatus(PedidoMentoriaStatus status);
+    
+    List<PedidoMentoria> findByMentorId(Long mentorId);
+    
+    List<PedidoMentoria> findByMentoradoId(Long mentoradoId);
 }

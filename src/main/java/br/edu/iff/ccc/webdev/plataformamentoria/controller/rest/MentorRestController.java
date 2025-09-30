@@ -2,11 +2,13 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.rest;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
+import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,9 @@ public class MentorRestController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<Mentor> getMentorById(@PathVariable Long id) {
-        Optional<Mentor> mentor = mentorService.findMentorById(id);
-        return mentor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Mentor mentor = mentorService.findMentorById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", id));
+        return ResponseEntity.ok(mentor);
     }
 
     @Operation(summary = "Cria um novo mentor", description = "Registra uma nova aplicação de mentor na plataforma. O perfil ficará pendente de aprovação.")
@@ -55,7 +58,7 @@ public class MentorRestController {
         @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
     })
     @PostMapping
-    public ResponseEntity<Mentor> createMentor(@RequestBody MentorFormDTO mentorDTO) {
+    public ResponseEntity<Mentor> createMentor(@Valid @RequestBody MentorFormDTO mentorDTO) {
         Mentor novoMentor = mentorService.saveMentor(mentorDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(novoMentor.getId()).toUri();
@@ -68,14 +71,9 @@ public class MentorRestController {
         @ApiResponse(responseCode = "404", description = "Mentor não encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Mentor> updateMentor(@PathVariable Long id, @RequestBody Mentor mentorDetails) {
-        Optional<Mentor> mentorOptional = mentorService.findMentorById(id);
-        if (mentorOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Mentor mentor = mentorOptional.get();
-        mentorService.updateProfile(mentor.getEmail(), mentorDetails);
-        return ResponseEntity.ok(mentor);
+    public ResponseEntity<Mentor> updateMentor(@PathVariable Long id, @Valid @RequestBody Mentor mentorDetails) {
+        Mentor mentorAtualizado = mentorService.updateMentorById(id, mentorDetails);
+        return ResponseEntity.ok(mentorAtualizado);
     }
 
     @Operation(summary = "Exclui um mentor", description = "Remove o registro de um mentor da plataforma.")
@@ -85,9 +83,8 @@ public class MentorRestController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMentor(@PathVariable Long id) {
-        if (mentorService.findMentorById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        mentorService.findMentorById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentor", "id", id));
         mentorService.deleteMentor(id);
         return ResponseEntity.noContent().build();
     }

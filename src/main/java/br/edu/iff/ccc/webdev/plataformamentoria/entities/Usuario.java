@@ -28,7 +28,7 @@ public abstract class Usuario implements Serializable {
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank(message = "O email не pode ser vazio.")
+    @NotBlank(message = "O email não pode ser vazio.")
     @Email(message = "Email inválido.")
     @Column(nullable = false, unique = true)
     private String email;

@@ -1,8 +1,9 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.controller.rest;
 
-
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
+import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/mentorados")
@@ -26,12 +26,13 @@ public class MentoradoRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Mentorado> getMentoradoById(@PathVariable Long id) {
-        Optional<Mentorado> mentorado = mentoradoService.findMentoradoById(id);
-        return mentorado.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Mentorado mentorado = mentoradoService.findMentoradoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentorado", "id", id));
+        return ResponseEntity.ok(mentorado);
     }
 
     @PostMapping
-    public ResponseEntity<Mentorado> createMentorado(@RequestBody Mentorado mentorado) {
+    public ResponseEntity<Mentorado> createMentorado(@Valid @RequestBody Mentorado mentorado) {
         Mentorado novoMentorado = mentoradoService.saveMentorado(mentorado);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(novoMentorado.getId()).toUri();
@@ -39,21 +40,26 @@ public class MentoradoRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mentorado> updateMentorado(@PathVariable Long id, @RequestBody Mentorado mentoradoDetails) {
-        Optional<Mentorado> mentoradoOptional = mentoradoService.findMentoradoById(id);
-        if (mentoradoOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Mentorado> updateMentorado(@PathVariable Long id, @Valid @RequestBody Mentorado mentoradoDetails) {
+        Mentorado mentoradoExistente = mentoradoService.findMentoradoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentorado", "id", id));
+        
+        // Atualizar os campos do mentorado existente
+        mentoradoExistente.setNome(mentoradoDetails.getNome());
+        mentoradoExistente.setEmail(mentoradoDetails.getEmail());
+        if (mentoradoDetails.getSenha() != null && !mentoradoDetails.getSenha().trim().isEmpty()) {
+            mentoradoExistente.setSenha(mentoradoDetails.getSenha());
         }
-        mentoradoDetails.setId(id);
-        mentoradoService.updateOnboarding(mentoradoDetails);
-        return ResponseEntity.ok(mentoradoDetails);
+        
+        // Salvar e retornar o mentorado atualizado
+        Mentorado mentoradoAtualizado = mentoradoService.saveMentorado(mentoradoExistente);
+        return ResponseEntity.ok(mentoradoAtualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMentorado(@PathVariable Long id) {
-        if (mentoradoService.findMentoradoById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        mentoradoService.findMentoradoById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentorado", "id", id));
         mentoradoService.deleteMentorado(id);
         return ResponseEntity.noContent().build();
     }

@@ -72,6 +72,65 @@ public class MentorService {
     }
     
     @Transactional
+    public Mentor updateMentorById(Long id, Mentor mentorDetails) {
+        Mentor mentor = mentorRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Mentor não encontrado com o id: " + id));
+
+        // Atualizar campos básicos
+        if (mentorDetails.getNome() != null && !mentorDetails.getNome().trim().isEmpty()) {
+            mentor.setNome(mentorDetails.getNome());
+        }
+        
+        if (mentorDetails.getEmail() != null && !mentorDetails.getEmail().trim().isEmpty()) {
+            mentor.setEmail(mentorDetails.getEmail());
+        }
+        
+        // Só atualiza a senha se foi fornecida e não está vazia
+        if (mentorDetails.getSenha() != null && !mentorDetails.getSenha().trim().isEmpty()) {
+            mentor.setSenha(passwordEncoder.encode(mentorDetails.getSenha()));
+        }
+        
+        if (mentorDetails.getEspecialidade() != null && !mentorDetails.getEspecialidade().trim().isEmpty()) {
+            mentor.setEspecialidade(mentorDetails.getEspecialidade());
+        }
+
+        // Atualizar campos do perfil se fornecidos
+        if (mentorDetails.getResumoProfissional() != null) {
+            mentor.setResumoProfissional(mentorDetails.getResumoProfissional());
+        }
+        
+        if (mentorDetails.getFilosofiaMentoria() != null) {
+            mentor.setFilosofiaMentoria(mentorDetails.getFilosofiaMentoria());
+        }
+        
+        if (mentorDetails.getCompetencias() != null) {
+            mentor.setCompetencias(mentorDetails.getCompetencias());
+        }
+        
+        if (mentorDetails.getAreasDeEspecializacao() != null) {
+            mentor.setAreasDeEspecializacao(mentorDetails.getAreasDeEspecializacao());
+        }
+        
+        if (mentorDetails.getDisponibilidadeMensal() != null) {
+            mentor.setDisponibilidadeMensal(mentorDetails.getDisponibilidadeMensal());
+        }
+        
+        if (mentorDetails.getFormatosReuniao() != null) {
+            mentor.setFormatosReuniao(mentorDetails.getFormatosReuniao());
+        }
+        
+        if (mentorDetails.getMaxMentorados() != null) {
+            mentor.setMaxMentorados(mentorDetails.getMaxMentorados());
+        }
+        
+        if (mentorDetails.getStatusDisponibilidade() != null) {
+            mentor.setStatusDisponibilidade(mentorDetails.getStatusDisponibilidade());
+        }
+
+        return mentorRepository.save(mentor);
+    }
+    
+    @Transactional
     public void deleteMentor(Long id) {
         mentorRepository.deleteById(id);
     }

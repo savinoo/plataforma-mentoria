@@ -2,6 +2,7 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.rest;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentoriaFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentoria;
+import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +27,9 @@ public class MentoriaRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Mentoria> getMentoriaById(@PathVariable Long id) {
-        Optional<Mentoria> mentoria = mentoriaService.findById(id);
-        return mentoria.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Mentoria mentoria = mentoriaService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentoria", "id", id));
+        return ResponseEntity.ok(mentoria);
     }
 
     @PostMapping
@@ -40,19 +42,19 @@ public class MentoriaRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Mentoria> updateMentoria(@PathVariable Long id, @RequestBody MentoriaFormDTO mentoriaDTO) {
-        try {
-            Mentoria mentoriaAtualizada = mentoriaService.update(id, mentoriaDTO);
-            return ResponseEntity.ok(mentoriaAtualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        // Verifica se a mentoria existe antes de atualizar
+        mentoriaService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentoria", "id", id));
+        
+        Mentoria mentoriaAtualizada = mentoriaService.update(id, mentoriaDTO);
+        return ResponseEntity.ok(mentoriaAtualizada);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMentoria(@PathVariable Long id) {
-        if (mentoriaService.findById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        mentoriaService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mentoria", "id", id));
+        
         mentoriaService.delete(id);
         return ResponseEntity.noContent().build();
     }
