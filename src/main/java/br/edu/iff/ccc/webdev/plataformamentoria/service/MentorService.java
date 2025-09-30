@@ -33,7 +33,7 @@ public class MentorService {
         mentor.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentor.setEspecialidade(mentorDTO.getEspecialidade());
         mentor.addPapel("MENTOR");
-        mentor.setAprovado(false);
+        mentor.setAprovado(true);
         mentor.setStatusDisponibilidade("Disponível");
         return mentorRepository.save(mentor);
     }
