@@ -42,6 +42,10 @@ public class MentorService {
         return mentorRepository.findByAprovadoIsTrue();
     }
 
+    public List<Mentor> findAllMentores() {
+        return mentorRepository.findAll(Sort.by(Sort.Direction.ASC, "nome"));
+    }
+
     public Optional<Mentor> findMentorById(Long id) {
         return mentorRepository.findById(id);
     }
@@ -151,11 +155,12 @@ public class MentorService {
             // direction = Sort.Direction.DESC;
         }
 
-        return mentorRepository.findWithFilters(termoBusca, especialidadeFiltro, statusFiltro, Sort.by(direction, sortProperty));
+        // Agora retorna TODOS os mentores (aprovados e não aprovados)
+        return mentorRepository.findAllWithFilters(termoBusca, especialidadeFiltro, statusFiltro, Sort.by(direction, sortProperty));
     }
 
     public List<String> getEspecialidades() {
-        return mentorRepository.findDistinctEspecialidades();
+        return mentorRepository.findAllDistinctEspecialidades();
     }
     
     public List<RecomendacaoDTO> recomendarMentores(Mentorado mentorado) {

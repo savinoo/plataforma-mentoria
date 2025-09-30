@@ -27,7 +27,7 @@ public class MentorRestController {
     private MentorService mentorService;
 
     @Operation(summary = "Lista todos os mentores com filtros opcionais",
-               description = "Retorna uma lista de mentores aprovados, permitindo filtrar por termo, especialidade e status.")
+               description = "Retorna uma lista de todos os mentores (aprovados e não aprovados), permitindo filtrar por termo, especialidade e status. O campo 'aprovado' serve como selo informativo.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso")
     })
