@@ -1,6 +1,4 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.exceptions;
-
-import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

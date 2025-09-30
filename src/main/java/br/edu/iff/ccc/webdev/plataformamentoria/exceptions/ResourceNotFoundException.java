@@ -1,4 +1,4 @@
-package br.edu.iff.ccc.webdev.plataformamentoria.exception;
+package br.edu.iff.ccc.webdev.plataformamentoria.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     

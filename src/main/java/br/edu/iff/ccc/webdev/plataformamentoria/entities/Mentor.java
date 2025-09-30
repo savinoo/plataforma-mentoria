@@ -1,6 +1,7 @@
 
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Mentor extends Usuario {
 
     @NotBlank(message = "A especialidade não pode ser vazia.")

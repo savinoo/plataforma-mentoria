@@ -4,7 +4,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.PedidoMentoria;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.PedidoMentoriaStatus;
-import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
+import br.edu.iff.ccc.webdev.plataformamentoria.exceptions.ResourceNotFoundException;
 import br.edu.iff.ccc.webdev.plataformamentoria.exceptions.RegraDeNegocioException;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentorService;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
@@ -66,12 +66,12 @@ public class PedidoMentoriaRestController {
     }
 
     @GetMapping("/status/{status}")
-    @Operation(summary = "Listar pedidos por status", description = "Retorna uma lista de pedidos filtrados por status (PENDENTE, ACEITO, REJEITADO)")
+    @Operation(summary = "Listar pedidos por status", description = "Retorna uma lista de pedidos filtrados por status (PENDENTE, ACEITO, RECUSADO)")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso")
     })
     public ResponseEntity<List<PedidoMentoria>> listarPorStatus(
-        @Parameter(description = "Status do pedido (PENDENTE, ACEITO, REJEITADO)", required = true) @PathVariable String status) {
+        @Parameter(description = "Status do pedido (PENDENTE, ACEITO, RECUSADO)", required = true) @PathVariable String status) {
         List<PedidoMentoria> pedidos = pedidoMentoriaService.listarPorStatus(status.toUpperCase());
         return ResponseEntity.ok(pedidos);
     }

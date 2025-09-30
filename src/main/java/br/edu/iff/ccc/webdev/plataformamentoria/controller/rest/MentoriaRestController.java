@@ -2,7 +2,7 @@ package br.edu.iff.ccc.webdev.plataformamentoria.controller.rest;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentoriaFormDTO;
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentoria;
-import br.edu.iff.ccc.webdev.plataformamentoria.exception.ResourceNotFoundException;
+import br.edu.iff.ccc.webdev.plataformamentoria.exceptions.ResourceNotFoundException;
 import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
