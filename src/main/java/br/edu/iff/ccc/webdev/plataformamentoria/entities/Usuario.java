@@ -1,6 +1,8 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +14,11 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) 
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id")
 public abstract class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +30,7 @@ public abstract class Usuario implements Serializable {
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank(message = "O email не pode ser vazio.")
+    @NotBlank(message = "O email não pode ser vazio.")
     @Email(message = "Email inválido.")
     @Column(nullable = false, unique = true)
     private String email;

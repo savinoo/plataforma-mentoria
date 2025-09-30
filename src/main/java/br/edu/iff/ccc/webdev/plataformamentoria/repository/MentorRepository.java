@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.repository;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentor;
@@ -16,7 +15,7 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     List<Mentor> findByAprovadoIsFalse();
     Optional<Mentor> findByEmail(String email);
 
-    @Query("SELECT m FROM Mentor m WHERE m.aprovado = true AND " +
+    @Query("SELECT m FROM Mentor m WHERE " +
            "(:termo IS NULL OR LOWER(m.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(m.resumoProfissional) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(m.competencias) LIKE LOWER(CONCAT('%', :termo, '%'))) AND " +
@@ -28,8 +27,23 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
         @Param("status") String status,
         Sort sort);
 
+    @Query("SELECT m FROM Mentor m WHERE " +
+           "(:termo IS NULL OR LOWER(m.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(m.resumoProfissional) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(m.competencias) LIKE LOWER(CONCAT('%', :termo, '%'))) AND " +
+           "(:especialidade IS NULL OR m.especialidade = :especialidade) AND " +
+           "(:status IS NULL OR m.statusDisponibilidade = :status)")
+    List<Mentor> findAllWithFilters(
+        @Param("termo") String termo,
+        @Param("especialidade") String especialidade,
+        @Param("status") String status,
+        Sort sort);
+
     @Query("SELECT DISTINCT m.especialidade FROM Mentor m WHERE m.aprovado = true ORDER BY m.especialidade")
     List<String> findDistinctEspecialidades();
+
+    @Query("SELECT DISTINCT m.especialidade FROM Mentor m ORDER BY m.especialidade")
+    List<String> findAllDistinctEspecialidades();
     
     List<Mentor> findByAprovadoIsTrueAndIdNot(Long mentoradoId);
 }

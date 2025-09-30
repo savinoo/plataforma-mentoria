@@ -108,6 +108,30 @@ Bash
 
 - Password: password
 
+## API REST e Documentação
+
+### Endpoints da API REST
+A aplicação inclui uma API REST completa para todas as operações CRUD das entidades principais:
+
+- **Mentores**: `/api/v1/mentores`
+- **Mentorados**: `/api/v1/mentorados`
+- **Mentorias**: `/api/v1/mentorias`
+- **Pedidos de Mentoria**: `/api/v1/pedidos-mentoria`
+
+### Documentação da API com Swagger
+A documentação interativa da API está disponível através do Swagger UI:
+
+📋 **[Acessar Documentação da API - Swagger UI](http://localhost:8080/swagger-ui/index.html)**
+
+A documentação inclui:
+- Descrição completa de todos os endpoints
+- Parâmetros de entrada e saída
+- Códigos de status HTTP
+- Exemplos de requisições e respostas
+- Possibilidade de testar os endpoints diretamente na interface
+
+> **Nota**: A aplicação deve estar executando para acessar a documentação Swagger.
+
 ## Credenciais de Acesso Padrão
 
 #### Para facilitar os testes, um usuário administrador é criado por padrão:

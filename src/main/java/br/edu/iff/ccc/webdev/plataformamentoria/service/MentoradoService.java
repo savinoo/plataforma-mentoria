@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.Mentorado;
@@ -54,5 +53,10 @@ public class MentoradoService {
             mentorado.setOnboardingCompleto(true);
             mentoradoRepository.save(mentorado);
         }
+    }
+
+    @Transactional
+    public void deleteMentorado(Long id) {
+        mentoradoRepository.deleteById(id);
     }
 }

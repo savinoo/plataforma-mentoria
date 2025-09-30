@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
@@ -34,13 +33,17 @@ public class MentorService {
         mentor.setSenha(passwordEncoder.encode(mentorDTO.getSenha()));
         mentor.setEspecialidade(mentorDTO.getEspecialidade());
         mentor.addPapel("MENTOR");
-        mentor.setAprovado(false);
+        mentor.setAprovado(true);
         mentor.setStatusDisponibilidade("Disponível");
         return mentorRepository.save(mentor);
     }
     
     public List<Mentor> findAprovados() {
         return mentorRepository.findByAprovadoIsTrue();
+    }
+
+    public List<Mentor> findAllMentores() {
+        return mentorRepository.findAll(Sort.by(Sort.Direction.ASC, "nome"));
     }
 
     public Optional<Mentor> findMentorById(Long id) {
@@ -72,6 +75,70 @@ public class MentorService {
         mentorRepository.save(mentor);
     }
     
+    @Transactional
+    public Mentor updateMentorById(Long id, Mentor mentorDetails) {
+        Mentor mentor = mentorRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Mentor não encontrado com o id: " + id));
+
+        // Atualizar campos básicos
+        if (mentorDetails.getNome() != null && !mentorDetails.getNome().trim().isEmpty()) {
+            mentor.setNome(mentorDetails.getNome());
+        }
+        
+        if (mentorDetails.getEmail() != null && !mentorDetails.getEmail().trim().isEmpty()) {
+            mentor.setEmail(mentorDetails.getEmail());
+        }
+        
+        // Só atualiza a senha se foi fornecida e não está vazia
+        if (mentorDetails.getSenha() != null && !mentorDetails.getSenha().trim().isEmpty()) {
+            mentor.setSenha(passwordEncoder.encode(mentorDetails.getSenha()));
+        }
+        
+        if (mentorDetails.getEspecialidade() != null && !mentorDetails.getEspecialidade().trim().isEmpty()) {
+            mentor.setEspecialidade(mentorDetails.getEspecialidade());
+        }
+
+        // Atualizar campos do perfil se fornecidos
+        if (mentorDetails.getResumoProfissional() != null) {
+            mentor.setResumoProfissional(mentorDetails.getResumoProfissional());
+        }
+        
+        if (mentorDetails.getFilosofiaMentoria() != null) {
+            mentor.setFilosofiaMentoria(mentorDetails.getFilosofiaMentoria());
+        }
+        
+        if (mentorDetails.getCompetencias() != null) {
+            mentor.setCompetencias(mentorDetails.getCompetencias());
+        }
+        
+        if (mentorDetails.getAreasDeEspecializacao() != null) {
+            mentor.setAreasDeEspecializacao(mentorDetails.getAreasDeEspecializacao());
+        }
+        
+        if (mentorDetails.getDisponibilidadeMensal() != null) {
+            mentor.setDisponibilidadeMensal(mentorDetails.getDisponibilidadeMensal());
+        }
+        
+        if (mentorDetails.getFormatosReuniao() != null) {
+            mentor.setFormatosReuniao(mentorDetails.getFormatosReuniao());
+        }
+        
+        if (mentorDetails.getMaxMentorados() != null) {
+            mentor.setMaxMentorados(mentorDetails.getMaxMentorados());
+        }
+        
+        if (mentorDetails.getStatusDisponibilidade() != null) {
+            mentor.setStatusDisponibilidade(mentorDetails.getStatusDisponibilidade());
+        }
+
+        return mentorRepository.save(mentor);
+    }
+    
+    @Transactional
+    public void deleteMentor(Long id) {
+        mentorRepository.deleteById(id);
+    }
+    
     public List<Mentor> searchMentores(String termo, String especialidade, String status, String sort) {
         String termoBusca = StringUtils.hasText(termo) ? termo : null;
         String especialidadeFiltro = StringUtils.hasText(especialidade) ? especialidade : null;
@@ -88,11 +155,12 @@ public class MentorService {
             // direction = Sort.Direction.DESC;
         }
 
-        return mentorRepository.findWithFilters(termoBusca, especialidadeFiltro, statusFiltro, Sort.by(direction, sortProperty));
+        // Agora retorna TODOS os mentores (aprovados e não aprovados)
+        return mentorRepository.findAllWithFilters(termoBusca, especialidadeFiltro, statusFiltro, Sort.by(direction, sortProperty));
     }
 
     public List<String> getEspecialidades() {
-        return mentorRepository.findDistinctEspecialidades();
+        return mentorRepository.findAllDistinctEspecialidades();
     }
     
     public List<RecomendacaoDTO> recomendarMentores(Mentorado mentorado) {

@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.config;
 
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/h2-console/**").permitAll()
+                .requestMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/h2-console/**", "/api/v1/**").permitAll() // Allow public access to API
                 .requestMatchers(HttpMethod.GET, "/mentores/new").permitAll()
                 .requestMatchers(HttpMethod.POST, "/mentores").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -48,7 +47,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/auth/login?logout")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/auth/sso/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/auth/sso/**", "/api/v1/**")) // Disable CSRF for API
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();

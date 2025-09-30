@@ -1,10 +1,12 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PedidoMentoria implements Serializable {
     private static final long serialVersionUID = 1L;
 
