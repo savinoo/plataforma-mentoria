@@ -9,7 +9,9 @@ import br.edu.iff.ccc.webdev.plataformamentoria.service.PedidoMentoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -39,14 +41,16 @@ public class PedidoMentoriaRestController {
                 .orElseThrow(() -> new RuntimeException("Mentor não encontrado"));
 
             PedidoMentoria pedido = pedidoMentoriaService.criarPedido(mentorado, mentor, mensagem, deRecomendacao);
-            return ResponseEntity.status(201).body(pedido);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(pedido.getId()).toUri();
+            return ResponseEntity.created(location).body(pedido);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PatchMapping("/{id}/aceitar")
-    public ResponseEntity<?> aceitarPedido(@PathVariable Long id) {
+    public ResponseEntity<Void> aceitarPedido(@PathVariable Long id) {
         try {
             pedidoMentoriaService.aceitarPedido(id);
             return ResponseEntity.ok().build();
@@ -56,7 +60,7 @@ public class PedidoMentoriaRestController {
     }
 
     @PatchMapping("/{id}/recusar")
-    public ResponseEntity<?> recusarPedido(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+    public ResponseEntity<Void> recusarPedido(@PathVariable Long id, @RequestBody Map<String, String> payload) {
         try {
             String motivo = payload.get("motivo");
             pedidoMentoriaService.recusarPedido(id, motivo);

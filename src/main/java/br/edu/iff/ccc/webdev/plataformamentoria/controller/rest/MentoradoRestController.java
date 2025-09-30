@@ -6,7 +6,9 @@ import br.edu.iff.ccc.webdev.plataformamentoria.service.MentoradoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +32,10 @@ public class MentoradoRestController {
 
     @PostMapping
     public ResponseEntity<Mentorado> createMentorado(@RequestBody Mentorado mentorado) {
-        return ResponseEntity.status(201).body(mentoradoService.saveMentorado(mentorado));
+        Mentorado novoMentorado = mentoradoService.saveMentorado(mentorado);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(novoMentorado.getId()).toUri();
+        return ResponseEntity.created(location).body(novoMentorado);
     }
 
     @PutMapping("/{id}")

@@ -1,6 +1,8 @@
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.entities.*;
+import br.edu.iff.ccc.webdev.plataformamentoria.exceptions.RecursoNaoEncontradoException;
+import br.edu.iff.ccc.webdev.plataformamentoria.exceptions.RegraDeNegocioException;
 import br.edu.iff.ccc.webdev.plataformamentoria.repository.PedidoMentoriaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,7 @@ public class PedidoMentoriaService {
     @Transactional
     public PedidoMentoria criarPedido(Mentorado mentorado, Mentor mentor, String mensagem, boolean deRecomendacao) {
         if (pedidoMentoriaRepository.existsByMentoradoAndMentorAndStatus(mentorado, mentor, PedidoMentoriaStatus.PENDENTE)) {
-            throw new IllegalStateException("Já existe um pedido pendente para este mentor.");
+            throw new RegraDeNegocioException("Já existe um pedido pendente para este mentor.");
         }
 
         PedidoMentoria pedido = new PedidoMentoria();
@@ -42,7 +44,7 @@ public class PedidoMentoriaService {
     @Transactional
     public void aceitarPedido(Long pedidoId) {
         PedidoMentoria pedido = pedidoMentoriaRepository.findById(pedidoId)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido de mentoria não encontrado com o ID: " + pedidoId));
         pedido.setStatus(PedidoMentoriaStatus.ACEITO);
         pedido.setDataResposta(LocalDateTime.now());
 
@@ -61,7 +63,7 @@ public class PedidoMentoriaService {
     @Transactional
     public void recusarPedido(Long pedidoId, String motivo) {
         PedidoMentoria pedido = pedidoMentoriaRepository.findById(pedidoId)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido de mentoria não encontrado com o ID: " + pedidoId));
         pedido.setStatus(PedidoMentoriaStatus.RECUSADO);
         pedido.setDataResposta(LocalDateTime.now());
         pedido.setMotivoRecusa(motivo);
