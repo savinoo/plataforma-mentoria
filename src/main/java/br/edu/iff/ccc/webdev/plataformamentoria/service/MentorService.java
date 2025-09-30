@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentorFormDTO;
@@ -70,6 +69,11 @@ public class MentorService {
         }
         
         mentorRepository.save(mentor);
+    }
+    
+    @Transactional
+    public void deleteMentor(Long id) {
+        mentorRepository.deleteById(id);
     }
     
     public List<Mentor> searchMentores(String termo, String especialidade, String status, String sort) {

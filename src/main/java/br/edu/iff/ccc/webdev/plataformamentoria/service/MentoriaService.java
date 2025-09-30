@@ -1,4 +1,3 @@
-
 package br.edu.iff.ccc.webdev.plataformamentoria.service;
 
 import br.edu.iff.ccc.webdev.plataformamentoria.dto.MentoriaFormDTO;
@@ -11,6 +10,7 @@ import br.edu.iff.ccc.webdev.plataformamentoria.repository.MentoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MentoriaService {
@@ -45,5 +45,23 @@ public class MentoriaService {
     
     public List<Mentoria> findAll() {
         return mentoriaRepository.findAll();
+    }
+
+    public Optional<Mentoria> findById(Long id) {
+        return mentoriaRepository.findById(id);
+    }
+
+    public Mentoria update(Long id, MentoriaFormDTO mentoriaDTO) {
+        Mentoria mentoria = mentoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Mentoria não encontrada"));
+        
+        mentoria.setTema(mentoriaDTO.getTema());
+        mentoria.setDataHora(mentoriaDTO.getDataHora());
+
+        return mentoriaRepository.save(mentoria);
+    }
+
+    public void delete(Long id) {
+        mentoriaRepository.deleteById(id);
     }
 }
